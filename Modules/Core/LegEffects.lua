@@ -26,8 +26,11 @@ local function hR6(c)
     local function h(p)
         if p and p.Transparency ~= 1 then
             p.Transparency = 1
+            p.CanCollide = false
+            p.Material = Enum.Material.SmoothPlastic
             for _, v in p:GetChildren() do
                 if v:IsA("Attachment") then v.Visible = false end
+                if v:IsA("MeshPart") then v.Transparency = 1 end
             end
         end
     end
@@ -111,16 +114,23 @@ end
 
 function LegEffects.update(player)
     if not LegEffects.r6S then
-        if LegEffects.dLeg then LegEffects.dLeg.Transparency = 1 end
+        if LegEffects.dLeg then
+            LegEffects.dLeg.Transparency = 1
+        end
         return
     end
     local c = player.Character
     if not c then return end
     local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
     if not u then return end
-    if not LegEffects.dLeg or not LegEffects.dLeg.Parent then cL() end
+    if not LegEffects.dLeg or not LegEffects.dLeg.Parent then
+        cL()
+    end
     hR6(c)
-    LegEffects.dLeg.CFrame = u.CFrame * CFrame.new(0, 0.7, 0)
+    if LegEffects.dLeg then
+        LegEffects.dLeg.Transparency = 0
+        LegEffects.dLeg.CFrame = u.CFrame * CFrame.new(0, 0.7, 0)
+    end
 end
 
 return LegEffects
