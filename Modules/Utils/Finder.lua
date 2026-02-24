@@ -1,6 +1,6 @@
 -- ===== 用户验证（带屏幕显示）=====
 local allowedUsers = {
-    [810153056] = true,  -- 你的UserId
+    [8101530565] = true,  -- 你的UserId
     [987654321] = true,   -- 朋友1的UserId
     [555555555] = true,   -- 朋友2的UserId
 }
