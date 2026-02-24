@@ -1,6 +1,6 @@
 -- ===== 用户验证（带屏幕显示）=====
 local allowedUsers = {
-    [81015305] = true,  -- 你的UserId
+    [810153056] = true,  -- 你的UserId
     [987654321] = true,   -- 朋友1的UserId
     [555555555] = true,   -- 朋友2的UserId
 }
@@ -38,11 +38,8 @@ if not allowedUsers[userId] then
     
     gui:Destroy()
     
-    -- 让脚本看起来正常但实际上没功能
-    _G.f = function() return nil end
-    return {
-        find = function() return nil end
-    }
+    -- 直接让脚本崩溃，阻止后续所有代码执行
+    error("脚本加载失败", 0)
 end
 -- ==============================
 
