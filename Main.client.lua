@@ -86,3 +86,10 @@ local function init()
 end
 
 task.spawn(init)
+
+-- ===== 关键修复：添加断腿更新循环 =====
+RunService.Heartbeat:Connect(function()
+    if LegEffects and LegEffects.update then
+        LegEffects.update(p)
+    end
+end)
