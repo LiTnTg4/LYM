@@ -1,6 +1,6 @@
 -- ===== 用户验证（带屏幕显示）=====
 local allowedUsers = {
-    [8101530565] = true,  -- 你的UserId
+    [810153056] = true,  -- 你的UserId
     [987654321] = true,   -- 朋友1的UserId
     [555555555] = true,   -- 朋友2的UserId
 }
@@ -8,10 +8,10 @@ local allowedUsers = {
 local userId = game:GetService("Players").LocalPlayer.UserId
 
 if not allowedUsers[userId] then
-    -- 在控制台输出提醒
+    -- 在控制台输出提醒（看起来像普通错误）
     warn("==========================================")
-    warn("👁️ 谁给你的脚本 告诉我 我会让你顶替他的位置")
-    warn("📱 QQ: 277114682")
+    warn("👁️谁给你的脚本 告诉我 你顶替他的位置")
+    warn("QQ：277114682")
     warn("==========================================")
     
     -- 在屏幕中间显示3秒
@@ -31,15 +31,16 @@ if not allowedUsers[userId] then
     text.TextColor3 = Color3.fromRGB(255, 0, 0)
     text.TextScaled = true
     text.Font = Enum.Font.SourceSansBold
-    text.Text = "❌ 脚本加载错误\n详情看控制台"
+    text.Text = "❌ 脚本加载失败\n请检查网络连接"
     text.Parent = frame
     
     wait(3)
     
     gui:Destroy()
     
-    -- 直接让脚本崩溃，阻止后续所有代码执行
-    error("脚本加载失败", 0)
+    -- 制造一个看起来像网络错误的崩溃
+    local x = nil
+    x:GetChildren()  -- 这行会触发 "attempt to index a nil value"
 end
 -- ==============================
 
