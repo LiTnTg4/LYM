@@ -3,9 +3,27 @@ local RunService = game:GetService("RunService")
 local p = Players.LocalPlayer
 
 local function loadModule(url, name)
-    local success, result = pcall(function()
-        return loadstring(game:HttpGet(url))()
+    local success, moduleFn = pcall(function()
+        return game:HttpGet(url)
     end)
+    if not success or not moduleFn then
+        warn("⚠️ 下载失败: " .. name)
+        return nil
+    end
+    
+    -- 创建沙盒环境
+    local env = getfenv()
+    env.script = {Parent = game:GetService("Players")}  -- 模拟 script.Parent
+    
+    local success, result = pcall(function()
+        local fn = loadstring(moduleFn)
+        if fn then
+            setfenv(fn, env)
+            return fn()
+        end
+        return nil
+    end)
+    
     if not success then
         warn("⚠️ 加载失败: " .. name .. " - " .. tostring(result))
         return nil
@@ -13,8 +31,16 @@ local function loadModule(url, name)
     return result
 end
 
--- 逐个加载模块，失败也不影响其他模块
+-- 先加载 Finder（因为其他模块依赖它）
 local Finder = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Utils/Finder.lua", "Finder")
+if not Finder then
+    warn("❌ Finder 加载失败，无法继续")
+    return
+end
+
+_G.f = Finder.find
+
+-- 再加载其他模块
 local Headless = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Core/Headless.lua", "Headless")
 local LegEffects = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Core/LegEffects.lua", "LegEffects")
 local Graphics = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Core/Graphics.lua", "Graphics")
@@ -24,12 +50,10 @@ local Menu = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modu
 local Cleanup = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Utils/Cleanup.lua", "Cleanup")
 
 -- 检查必要模块
-if not Finder or not Headless or not LegEffects or not Performance then
+if not Headless or not LegEffects or not Performance then
     warn("❌ 必要模块加载失败，请检查链接")
     return
 end
-
-_G.f = Finder.find
 
 local State = {Graphics = false, R6Leg = false, R15Leg = false, Hat = false}
 
