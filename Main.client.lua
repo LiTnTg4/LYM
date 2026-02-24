@@ -18,7 +18,6 @@ local function loadModule(url, name)
         return game:HttpGet(url)
     end)
     if not success or not moduleFn then
-        warn("⚠️ 下载失败: " .. name)
         return nil
     end
     
@@ -27,23 +26,18 @@ local function loadModule(url, name)
     end)
     
     if not success then
-        warn("⚠️ 加载失败: " .. name .. " - " .. tostring(result))
         return nil
     end
     return result
 end
 
--- 先加载 Finder（验证在这里）
 local Finder = loadModule(moduleUrls.Finder, "Finder")
 if not Finder then
-    warn("❌ Finder 加载失败，无法继续")
     return
 end
 
--- 验证通过后才设置 _G.f
 _G.f = Finder.find
 
--- 再加载其他模块
 local Headless = loadModule(moduleUrls.Headless, "Headless")
 local LegEffects = loadModule(moduleUrls.LegEffects, "LegEffects")
 local Graphics = loadModule(moduleUrls.Graphics, "Graphics")
@@ -52,9 +46,7 @@ local Performance = loadModule(moduleUrls.Performance, "Performance")
 local Menu = loadModule(moduleUrls.Menu, "Menu")
 local Cleanup = loadModule(moduleUrls.Cleanup, "Cleanup")
 
--- 如果验证没通过，Finder 会返回假模块，这里就会失败
 if not Headless or not LegEffects or not Performance then
-    warn("❌ 必要模块加载失败")
     return
 end
 
