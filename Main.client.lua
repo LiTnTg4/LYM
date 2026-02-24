@@ -6,7 +6,6 @@ local function loadModule(url)
     return loadstring(game:HttpGet(url))()
 end
 
--- 直接用raw链接加载所有模块
 local Finder = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Utils/Finder.lua")
 local Headless = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Core/Headless.lua")
 local LegEffects = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Core/LegEffects.lua")
