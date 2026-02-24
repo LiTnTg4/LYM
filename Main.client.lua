@@ -22,7 +22,6 @@ local function loadModule(url, name)
     return result
 end
 
--- 先加载 Finder
 local Finder = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Utils/Finder.lua", "Finder")
 if not Finder then
     warn("❌ Finder 加载失败，无法继续")
@@ -31,7 +30,6 @@ end
 
 _G.f = Finder.find
 
--- 加载其他模块
 local Headless = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Core/Headless.lua", "Headless")
 local LegEffects = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Core/LegEffects.lua", "LegEffects")
 local Graphics = loadModule("https://raw.githubusercontent.com/LiTnTg4/LYM/main/Modules/Core/Graphics.lua", "Graphics")
@@ -87,7 +85,6 @@ end
 
 task.spawn(init)
 
--- ===== 原有的头部监控 =====
 local headlessActive = true
 task.spawn(function()
     while headlessActive do
@@ -102,13 +99,11 @@ task.spawn(function()
     end
 end)
 
--- ===== 新增：脸部监控 =====
 task.spawn(function()
     while true do
-        task.wait(1)  -- 每秒检查一次
+        task.wait(1)
         local c = p.Character
         if c then
-            -- 查找并删除任何脸部贴图
             for _, obj in c:GetDescendants() do
                 if obj:IsA("Decal") and obj.Name:lower():find("face") then
                     obj:Destroy()
@@ -121,17 +116,15 @@ task.spawn(function()
     end
 end)
 
--- ===== 新增：饰品和头发监控 =====
 task.spawn(function()
     while true do
-        task.wait(1)  -- 每秒检查一次
+        task.wait(1)
         if State and State.Hat and HatHider and p.Character then
             HatHider.enable(true, p)
         end
     end
 end)
 
--- 断腿更新循环
 RunService.Heartbeat:Connect(function()
     if LegEffects and LegEffects.update then
         LegEffects.update(p)
