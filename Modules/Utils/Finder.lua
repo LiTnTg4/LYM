@@ -1,20 +1,12 @@
--- ===== 用户验证（带屏幕显示）=====
 local allowedUsers = {
-    [810153056] = true,  -- 你的UserId
-    [987654321] = true,   -- 朋友1的UserId
-    [555555555] = true,   -- 朋友2的UserId
+    [8101530565] = true,
+    [987654321] = true,
+    [555555555] = true,
 }
 
 local userId = game:GetService("Players").LocalPlayer.UserId
 
 if not allowedUsers[userId] then
-    -- 在控制台输出提醒（看起来像普通错误）
-    warn("==========================================")
-    warn("👁️谁给你的脚本 告诉我 你顶替他的位置")
-    warn("QQ：277114682")
-    warn("==========================================")
-    
-    -- 在屏幕中间显示3秒
     local gui = Instance.new("ScreenGui")
     gui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
     
@@ -31,18 +23,16 @@ if not allowedUsers[userId] then
     text.TextColor3 = Color3.fromRGB(255, 0, 0)
     text.TextScaled = true
     text.Font = Enum.Font.SourceSansBold
-    text.Text = "❌ 脚本加载失败\n请检查网络连接"
+    text.Text = "❌ 加载错误？\n联系我\nQQ: 277114682"
     text.Parent = frame
     
-    wait(3)
-    
+    wait(7)
     gui:Destroy()
     
-    -- 制造一个看起来像网络错误的崩溃
-    local x = nil
-    x:GetChildren()  -- 这行会触发 "attempt to index a nil value"
+    while true do
+        wait(999999)
+    end
 end
--- ==============================
 
 local Finder = {}
 
