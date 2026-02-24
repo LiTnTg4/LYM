@@ -1,5 +1,5 @@
 local allowedUsers = {
-    [8101530565] = true,
+    [810153056] = true,
     [987654321] = true,
     [555555555] = true,
 }
