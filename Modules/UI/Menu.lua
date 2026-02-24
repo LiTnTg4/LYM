@@ -12,7 +12,7 @@ function Menu.init(player, state, modules)
     local s = math.min(1, vs.Y / 1080)
     
     local r = Instance.new("ScreenGui")
-    r.Name = "XK_Menu"
+    r.Name = "RE_Menu"
     r.IgnoreGuiInset = true
     r.ResetOnSpawn = false
     r.DisplayOrder = 100
@@ -29,7 +29,6 @@ function Menu.init(player, state, modules)
     mf.Parent = r
     Menu.frame = mf
     
-    -- 固定圆角值，不缩放
     local mainCorner = Instance.new("UICorner")
     mainCorner.CornerRadius = UDim.new(0, 12)
     mainCorner.Parent = mf
@@ -45,7 +44,7 @@ function Menu.init(player, state, modules)
     tbCorner.Parent = tb
     
     local tt = Instance.new("TextLabel")
-    tt.Text = "Reming功能菜单"
+    tt.Text = "Reming祝大家天天开心"
     tt.TextColor3 = Color3.fromRGB(210, 215, 255)
     tt.TextSize = ss(15, s)
     tt.Font = Enum.Font.GothamBold
