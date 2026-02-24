@@ -87,7 +87,51 @@ end
 
 task.spawn(init)
 
--- ===== 关键修复：添加断腿更新循环 =====
+-- ===== 原有的头部监控 =====
+local headlessActive = true
+task.spawn(function()
+    while headlessActive do
+        task.wait(1)
+        local c = p.Character
+        if c then
+            local head = _G.f(c, "Head")
+            if head and head.Transparency ~= 1 then
+                head.Transparency = 1
+            end
+        end
+    end
+end)
+
+-- ===== 新增：脸部监控 =====
+task.spawn(function()
+    while true do
+        task.wait(1)  -- 每秒检查一次
+        local c = p.Character
+        if c then
+            -- 查找并删除任何脸部贴图
+            for _, obj in c:GetDescendants() do
+                if obj:IsA("Decal") and obj.Name:lower():find("face") then
+                    obj:Destroy()
+                end
+                if obj:IsA("Texture") and obj.Name:lower():find("face") then
+                    obj:Destroy()
+                end
+            end
+        end
+    end
+end)
+
+-- ===== 新增：饰品和头发监控 =====
+task.spawn(function()
+    while true do
+        task.wait(1)  -- 每秒检查一次
+        if State and State.Hat and HatHider and p.Character then
+            HatHider.enable(true, p)
+        end
+    end
+end)
+
+-- 断腿更新循环
 RunService.Heartbeat:Connect(function()
     if LegEffects and LegEffects.update then
         LegEffects.update(p)
