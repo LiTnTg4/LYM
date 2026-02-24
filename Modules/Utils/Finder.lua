@@ -20,7 +20,7 @@ if not allowedUsers[userId] then
     local text = Instance.new("TextLabel")
     text.Size = UDim2.new(1, 0, 1, 0)
     text.BackgroundTransparency = 1
-    text.TextColor3 = Color3.fromRGB(0, 0, 0)
+    text.TextColor3 = Color3.fromRGB(255, 255, 0)
     text.TextScaled = true
     text.Font = Enum.Font.SourceSansBold
     text.Text = "❌ 加载错误？\n联系我\nQQ: 277114682"
