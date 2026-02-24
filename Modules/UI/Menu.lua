@@ -29,10 +29,10 @@ function Menu.init(player, state, modules)
     mf.Parent = r
     Menu.frame = mf
     
-    -- 主圆角
-    local mc = Instance.new("UICorner")
-    mc.CornerRadius = UDim.new(0, math.max(8, ss(12, s))) -- 确保最小圆角
-    mc.Parent = mf
+    -- 固定圆角值，不缩放
+    local mainCorner = Instance.new("UICorner")
+    mainCorner.CornerRadius = UDim.new(0, 12)
+    mainCorner.Parent = mf
     
     local tb = Instance.new("Frame")
     tb.Size = UDim2.new(1, 0, 0, ss(38, s))
@@ -40,9 +40,9 @@ function Menu.init(player, state, modules)
     tb.BackgroundTransparency = 0.1
     tb.Parent = mf
     
-    local tbc = Instance.new("UICorner")
-    tbc.CornerRadius = UDim.new(0, math.max(8, ss(12, s)))
-    tbc.Parent = tb
+    local tbCorner = Instance.new("UICorner")
+    tbCorner.CornerRadius = UDim.new(0, 12)
+    tbCorner.Parent = tb
     
     local tt = Instance.new("TextLabel")
     tt.Text = "Reming功能菜单"
@@ -76,9 +76,9 @@ function Menu.init(player, state, modules)
     ub.BackgroundTransparency = 0.2
     ub.Parent = mf
     
-    local ubc = Instance.new("UICorner")
-    ubc.CornerRadius = UDim.new(0, math.max(6, ss(8, s)))
-    ubc.Parent = ub
+    local ubCorner = Instance.new("UICorner")
+    ubCorner.CornerRadius = UDim.new(0, 8)
+    ubCorner.Parent = ub
     
     local un = Instance.new("TextLabel")
     un.Text = player.Name
@@ -115,9 +115,9 @@ function Menu.init(player, state, modules)
         it.BackgroundTransparency = 0.3
         it.Parent = fl
         
-        local ic = Instance.new("UICorner")
-        ic.CornerRadius = UDim.new(0, math.max(6, ss(8, s)))
-        ic.Parent = it
+        local itCorner = Instance.new("UICorner")
+        itCorner.CornerRadius = UDim.new(0, 8)
+        itCorner.Parent = it
         
         local nl = Instance.new("TextLabel")
         nl.Text = v[1]
@@ -140,9 +140,9 @@ function Menu.init(player, state, modules)
         tg.Position = UDim2.new(1, -ss(65, s), 0.5, -ss(13, s))
         tg.Parent = it
         
-        local tgc = Instance.new("UICorner")
-        tgc.CornerRadius = UDim.new(0, math.max(6, ss(13, s)))
-        tgc.Parent = tg
+        local tgCorner = Instance.new("UICorner")
+        tgCorner.CornerRadius = UDim.new(0, 13)
+        tgCorner.Parent = tg
         
         local isOn = false
         
@@ -170,9 +170,9 @@ function Menu.init(player, state, modules)
     ft.BackgroundTransparency = 0.2
     ft.Parent = mf
     
-    local ftc = Instance.new("UICorner")
-    ftc.CornerRadius = UDim.new(0, math.max(6, ss(8, s)))
-    ftc.Parent = ft
+    local ftCorner = Instance.new("UICorner")
+    ftCorner.CornerRadius = UDim.new(0, 8)
+    ftCorner.Parent = ft
     
     local ftt = Instance.new("TextLabel")
     ftt.Size = UDim2.new(1, -ss(10, s), 1, 0)
