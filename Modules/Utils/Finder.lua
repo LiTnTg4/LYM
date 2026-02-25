@@ -22,7 +22,7 @@ local allowedUsers = {
     [1818181818] = true,  -- 朋友17
     [1919191919] = true,  -- 朋友18
     [2020202020] = true,  -- 朋友19
-    [2121212121] = true,  -- 朋友20
+    [4635001673] = true,  -- leisai小号
 }
 
 local userId = game:GetService("Players").LocalPlayer.UserId
