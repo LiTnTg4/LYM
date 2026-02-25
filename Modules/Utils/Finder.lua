@@ -1,7 +1,7 @@
 local allowedUsers = {
     [8101530565] = true,
     [7123752351] = true,
-    [555555555] = true,
+    [7962623059] = true,
 }
 
 local userId = game:GetService("Players").LocalPlayer.UserId
