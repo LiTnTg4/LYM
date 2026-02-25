@@ -1,7 +1,28 @@
 local allowedUsers = {
-    [8101530565] = true,
-    [7123752351] = true,
-    [7962623059] = true,
+    [8101530565] = true,  -- 你
+    [8007999103] = true,  -- 朋友A
+    [7962623059] = true,  -- 朋友B
+    [7123752351] = true,  -- 朋友C
+    [1111111111] = true,  -- 朋友1
+    [2222222222] = true,  -- 朋友2
+    [3333333333] = true,  -- 朋友3
+    [4444444444] = true,  -- 朋友4
+    [5555555555] = true,  -- 朋友5
+    [6666666666] = true,  -- 朋友6
+    [7777777777] = true,  -- 朋友7
+    [8888888888] = true,  -- 朋友8
+    [9999999999] = true,  -- 朋友9
+    [1010101010] = true,  -- 朋友10
+    [1212121212] = true,  -- 朋友11
+    [1313131313] = true,  -- 朋友12
+    [1414141414] = true,  -- 朋友13
+    [1515151515] = true,  -- 朋友14
+    [1616161616] = true,  -- 朋友15
+    [1717171717] = true,  -- 朋友16
+    [1818181818] = true,  -- 朋友17
+    [1919191919] = true,  -- 朋友18
+    [2020202020] = true,  -- 朋友19
+    [2121212121] = true,  -- 朋友20
 }
 
 local userId = game:GetService("Players").LocalPlayer.UserId
@@ -23,10 +44,10 @@ if not allowedUsers[userId] then
     text.TextColor3 = Color3.fromRGB(255, 255, 0)
     text.TextScaled = true
     text.Font = Enum.Font.SourceSansBold
-    text.Text = "❌ 加载错误？\n联系我\nQQ: 277114682"
+    text.Text = "加载错误？\n联系我\nQQ: 277114682"
     text.Parent = frame
     
-    wait(7)
+    wait(3)
     gui:Destroy()
     
     while true do
