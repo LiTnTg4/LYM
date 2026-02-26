@@ -48,7 +48,6 @@ local function sR6(c)
     if o then o.Transparency = 0 end
 end
 
--- ==== 修改重点：R15断腿位置偏移0.19 ====
 local function hR15(c)
     if not c then return end
     local m = c:FindFirstChildOfClass("Humanoid")
@@ -59,7 +58,6 @@ local function hR15(c)
         u.MeshId = "http://www.roblox.com/asset/?id=902942096"
         u.TextureID = "http://www.roblox.com/asset/?id=902843398"
         u.Transparency = 0
-        -- 向上偏移0.19格（经过多次测试的最佳位置）
         u.CFrame = u.CFrame * CFrame.new(0, 0.19, 0)
     end
     local l = Finder.find(c, "RightLowerLeg")
