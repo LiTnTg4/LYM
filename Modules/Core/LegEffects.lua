@@ -1,4 +1,5 @@
 local LegEffects = {dLeg = nil, r6S = false, r15S = false, sR = {}}
+local Finder = require(script.Parent.Parent.Utils.Finder)
 
 local function cL()
     if LegEffects.dLeg and LegEffects.dLeg.Parent then LegEffects.dLeg:Destroy() end
@@ -20,9 +21,9 @@ end
 
 local function hR6(c)
     if not c then return end
-    local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
-    local l = _G.f(c, "RightLowerLeg")
-    local o = _G.f(c, "RightFoot") or _G.f(c, "Right Foot")
+    local u = Finder.find(c, "RightUpperLeg") or Finder.find(c, "Right Leg")
+    local l = Finder.find(c, "RightLowerLeg")
+    local o = Finder.find(c, "RightFoot") or Finder.find(c, "Right Foot")
     local function h(p)
         if p and p.Transparency ~= 1 then
             p.Transparency = 1
@@ -39,32 +40,35 @@ end
 
 local function sR6(c)
     if not c then return end
-    local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
-    local l = _G.f(c, "RightLowerLeg")
-    local o = _G.f(c, "RightFoot") or _G.f(c, "Right Foot")
+    local u = Finder.find(c, "RightUpperLeg") or Finder.find(c, "Right Leg")
+    local l = Finder.find(c, "RightLowerLeg")
+    local o = Finder.find(c, "RightFoot") or Finder.find(c, "Right Foot")
     if u then u.Transparency = 0 end
     if l then l.Transparency = 0 end
     if o then o.Transparency = 0 end
 end
 
+-- ==== 修改重点：R15断腿位置偏移0.19 ====
 local function hR15(c)
     if not c then return end
     local m = c:FindFirstChildOfClass("Humanoid")
     if not m or m.RigType ~= Enum.HumanoidRigType.R15 then return end
-    local u = _G.f(c, "RightUpperLeg")
+    local u = Finder.find(c, "RightUpperLeg")
     if u then
         LegEffects.sR[u] = {MeshId = u.MeshId, TextureId = u.TextureID, Transparency = u.Transparency}
         u.MeshId = "http://www.roblox.com/asset/?id=902942096"
         u.TextureID = "http://www.roblox.com/asset/?id=902843398"
         u.Transparency = 0
+        -- 向上偏移0.19格（经过多次测试的最佳位置）
+        u.CFrame = u.CFrame * CFrame.new(0, 0.19, 0)
     end
-    local l = _G.f(c, "RightLowerLeg")
+    local l = Finder.find(c, "RightLowerLeg")
     if l then
         LegEffects.sR[l] = {MeshId = l.MeshId, Transparency = l.Transparency}
         l.MeshId = "http://www.roblox.com/asset/?id=902942093"
         l.Transparency = 1
     end
-    local o = _G.f(c, "RightFoot") or _G.f(c, "Right Foot")
+    local o = Finder.find(c, "RightFoot") or Finder.find(c, "Right Foot")
     if o then
         LegEffects.sR[o] = {MeshId = o.MeshId, Transparency = o.Transparency}
         o.MeshId = "http://www.roblox.com/asset/?id=902942089"
@@ -121,7 +125,7 @@ function LegEffects.update(player)
     end
     local c = player.Character
     if not c then return end
-    local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
+    local u = Finder.find(c, "RightUpperLeg") or Finder.find(c, "Right Leg")
     if not u then return end
     if not LegEffects.dLeg or not LegEffects.dLeg.Parent then
         cL()
