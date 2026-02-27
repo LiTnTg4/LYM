@@ -19,7 +19,7 @@ function Menu.init(player, state, modules)
     r.Parent = pg
     
     local mf = Instance.new("Frame")
-    mf.Size = UDim2.new(0, ss(280, s), 0, ss(460, s))  -- 恢复原高度
+    mf.Size = UDim2.new(0, ss(280, s), 0, ss(460, s))
     mf.Position = UDim2.new(0.5, -ss(140, s), 0.5, -ss(230, s))
     mf.BackgroundColor3 = Color3.fromRGB(20, 22, 28)
     mf.BackgroundTransparency = 0.05
@@ -52,42 +52,39 @@ function Menu.init(player, state, modules)
     tt.Font = Enum.Font.GothamBold
     tt.TextXAlignment = Enum.TextXAlignment.Left
     tt.BackgroundTransparency = 1
-    tt.Size = UDim2.new(0.5, -ss(15, s), 1, 0)
+    tt.Size = UDim2.new(0.6, -ss(15, s), 1, 0)
     tt.Position = UDim2.new(0, ss(15, s), 0, 0)
     tt.Parent = tb
     
-    -- ========== 右侧按钮区域 ==========
-    local buttonArea = Instance.new("Frame")
-    buttonArea.Size = UDim2.new(0, ss(70, s), 1, 0)
-    buttonArea.Position = UDim2.new(1, -ss(70, s), 0, 0)
-    buttonArea.BackgroundTransparency = 1
-    buttonArea.Parent = tb
-    
     -- 最小化按钮
     local mb = Instance.new("TextButton")
+    mb.Name = "MinimizeButton"
     mb.Text = "─"
     mb.TextSize = ss(20, s)
     mb.Font = Enum.Font.GothamBold
     mb.TextColor3 = Color3.fromRGB(170, 175, 210)
     mb.BackgroundTransparency = 1
     mb.Size = UDim2.new(0, ss(35, s), 1, 0)
-    mb.Position = UDim2.new(0, 0, 0, 0)
-    mb.Parent = buttonArea
+    mb.Position = UDim2.new(1, -ss(70, s), 0, 0)  -- 左移给删除按钮让位
+    mb.ZIndex = 10
+    mb.Parent = tb
     
     if Menu.minCallback then
         mb.MouseButton1Click:Connect(Menu.minCallback)
     end
     
-    -- 删除按钮（红色）
+    -- 删除按钮
     local db = Instance.new("TextButton")
+    db.Name = "DeleteButton"
     db.Text = "✕"
     db.TextSize = ss(18, s)
     db.Font = Enum.Font.GothamBold
-    db.TextColor3 = Color3.fromRGB(255, 100, 100)
+    db.TextColor3 = Color3.fromRGB(255, 80, 80)
     db.BackgroundTransparency = 1
     db.Size = UDim2.new(0, ss(35, s), 1, 0)
-    db.Position = UDim2.new(0, ss(35, s), 0, 0)
-    db.Parent = buttonArea
+    db.Position = UDim2.new(1, -ss(35, s), 0, 0)  -- 最右侧
+    db.ZIndex = 10
+    db.Parent = tb
     
     -- 删除功能
     db.MouseButton1Click:Connect(function()
