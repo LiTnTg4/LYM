@@ -1,8 +1,7 @@
 local LegEffects = {dLeg = nil, r6S = false, r15S = false, sR = {}}
-local Finder = require(script.Parent.Parent.Utils.Finder)
 
--- R6专用断腿模型
 local r6Leg = nil
+local r15Leg = nil
 
 local function createR6Leg()
     if r6Leg and r6Leg.Parent then r6Leg:Destroy() end
@@ -21,9 +20,6 @@ local function createR6Leg()
     m.Scale = Vector3.new(0.936, 0.9984, 0.936)
     m.Parent = r6Leg
 end
-
--- R15专用断腿模型
-local r15Leg = nil
 
 local function createR15Leg()
     if r15Leg and r15Leg.Parent then r15Leg:Destroy() end
@@ -45,9 +41,9 @@ end
 
 local function hR6(c)
     if not c then return end
-    local u = Finder.find(c, "RightUpperLeg") or Finder.find(c, "Right Leg")
-    local l = Finder.find(c, "RightLowerLeg")
-    local o = Finder.find(c, "RightFoot") or Finder.find(c, "Right Foot")
+    local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
+    local l = _G.f(c, "RightLowerLeg")
+    local o = _G.f(c, "RightFoot") or _G.f(c, "Right Foot")
     local function h(p)
         if p and p.Transparency ~= 1 then
             p.Transparency = 1
@@ -64,49 +60,40 @@ end
 
 local function sR6(c)
     if not c then return end
-    local u = Finder.find(c, "RightUpperLeg") or Finder.find(c, "Right Leg")
-    local l = Finder.find(c, "RightLowerLeg")
-    local o = Finder.find(c, "RightFoot") or Finder.find(c, "Right Foot")
+    local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
+    local l = _G.f(c, "RightLowerLeg")
+    local o = _G.f(c, "RightFoot") or _G.f(c, "Right Foot")
     if u then u.Transparency = 0 end
     if l then l.Transparency = 0 end
     if o then o.Transparency = 0 end
 end
 
--- ==== R15断腿（完全独立，不共享）====
 local function hR15(c)
     if not c then return end
     local m = c:FindFirstChildOfClass("Humanoid")
     if not m or m.RigType ~= Enum.HumanoidRigType.R15 then return end
     
-    -- 创建R15专用断腿模型
     if not r15Leg or not r15Leg.Parent then
         createR15Leg()
     end
     
-    local u = Finder.find(c, "RightUpperLeg")
+    local u = _G.f(c, "RightUpperLeg")
     if u then
-        -- 保存原腿信息
         LegEffects.sR[u] = {MeshId = u.MeshId, TextureId = u.TextureID, Transparency = u.Transparency}
-        
-        -- 隐藏原腿
         u.Transparency = 1
-        
-        -- 设置断腿模型位置（向上偏移0.19）
         if r15Leg then
             r15Leg.CFrame = u.CFrame * CFrame.new(0, 0.19, 0)
             r15Leg.Transparency = 0
         end
     end
     
-    -- 隐藏小腿
-    local l = Finder.find(c, "RightLowerLeg")
+    local l = _G.f(c, "RightLowerLeg")
     if l then
         LegEffects.sR[l] = {MeshId = l.MeshId, Transparency = l.Transparency}
         l.Transparency = 1
     end
     
-    -- 隐藏脚
-    local o = Finder.find(c, "RightFoot") or Finder.find(c, "Right Foot")
+    local o = _G.f(c, "RightFoot") or _G.f(c, "Right Foot")
     if o then
         LegEffects.sR[o] = {MeshId = o.MeshId, Transparency = o.Transparency}
         o.Transparency = 1
@@ -122,8 +109,6 @@ local function sR15(c)
         end
     end
     LegEffects.sR = {}
-    
-    -- 删除R15断腿模型
     if r15Leg then
         r15Leg:Destroy()
         r15Leg = nil
@@ -132,7 +117,6 @@ end
 
 function LegEffects.enableR6(bool, player)
     LegEffects.r6S = bool
-    getgenv().PhantomR6Leg = bool
     if bool then
         if player.Character then
             createR6Leg()
@@ -143,7 +127,7 @@ function LegEffects.enableR6(bool, player)
             r6Leg:Destroy()
             r6Leg = nil
         end
-        if not getgenv().PhantomR15Leg then
+        if not LegEffects.r15S then
             sR6(player.Character)
         end
     end
@@ -151,7 +135,6 @@ end
 
 function LegEffects.enableR15(bool, player)
     LegEffects.r15S = bool
-    getgenv().PhantomR15Leg = bool
     if bool then
         if player.Character then 
             hR15(player.Character)
@@ -164,26 +147,24 @@ function LegEffects.enableR15(bool, player)
 end
 
 function LegEffects.update(player)
-    -- R6断腿更新（独立）
     if LegEffects.r6S then
         local c = player.Character
         if c and r6Leg then
-            local u = Finder.find(c, "RightUpperLeg") or Finder.find(c, "Right Leg")
+            local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
             if u then
                 r6Leg.Transparency = 0
                 r6Leg.CFrame = u.CFrame * CFrame.new(0, 0.7, 0)
-                hR6(c)  -- 确保原腿隐藏
+                hR6(c)
             end
         end
     elseif r6Leg then
         r6Leg.Transparency = 1
     end
     
-    -- R15断腿更新（独立，每帧保持偏移0.19）
     if LegEffects.r15S then
         local c = player.Character
         if c and r15Leg then
-            local u = Finder.find(c, "RightUpperLeg")
+            local u = _G.f(c, "RightUpperLeg")
             if u then
                 r15Leg.CFrame = u.CFrame * CFrame.new(0, 0.19, 0)
                 r15Leg.Transparency = 0
