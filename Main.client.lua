@@ -114,7 +114,7 @@ local function init()
             )
             
             -- 等待第一个公告完全消失
-            task.wait(3.1)
+            task.wait(1)
             
             -- 第二个公告：功能提示（显示5秒）
             Notification.show(
@@ -125,7 +125,7 @@ local function init()
             )
             
             -- 等待第二个公告完全消失
-            task.wait(5.1)
+            task.wait(1)
             
             -- 第三个公告：准备就绪（显示4秒）
             Notification.show(
