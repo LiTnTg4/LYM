@@ -56,63 +56,62 @@ function Menu.init(player, state, modules)
     tt.Position = UDim2.new(0, ss(15, s), 0, 0)
     tt.Parent = tb
     
-    -- 按钮容器（放在标题栏右侧）
-    local btnContainer = Instance.new("Frame")
-    btnContainer.Size = UDim2.new(0, ss(70, s), 1, 0)
-    btnContainer.Position = UDim2.new(1, -ss(70, s), 0, 0)
-    btnContainer.BackgroundTransparency = 1
-    btnContainer.Parent = tb
-    
-    -- 最小化按钮
+    -- 最小化按钮（放在最右边）
     local mb = Instance.new("TextButton")
+    mb.Name = "MinimizeButton"
     mb.Text = "─"
     mb.TextSize = ss(20, s)
     mb.Font = Enum.Font.GothamBold
     mb.TextColor3 = Color3.fromRGB(170, 175, 210)
     mb.BackgroundTransparency = 1
     mb.Size = UDim2.new(0, ss(35, s), 1, 0)
-    mb.Position = UDim2.new(0, 0, 0, 0)
-    mb.Parent = btnContainer
+    mb.Position = UDim2.new(1, -ss(35, s), 0, 0)
+    mb.ZIndex = 10
+    mb.Parent = tb
     
     if Menu.minCallback then
         mb.MouseButton1Click:Connect(Menu.minCallback)
     end
     
-    -- 删除按钮
+    -- 删除按钮（放在最小化按钮左边）
     local db = Instance.new("TextButton")
+    db.Name = "DeleteButton"
     db.Text = "✕"
     db.TextSize = ss(18, s)
     db.Font = Enum.Font.GothamBold
     db.TextColor3 = Color3.fromRGB(255, 80, 80)
     db.BackgroundTransparency = 1
     db.Size = UDim2.new(0, ss(35, s), 1, 0)
-    db.Position = UDim2.new(0, ss(35, s), 0, 0)
-    db.Parent = btnContainer
+    db.Position = UDim2.new(1, -ss(70, s), 0, 0)
+    db.ZIndex = 10
+    db.Parent = tb
     
     -- 删除功能
     db.MouseButton1Click:Connect(function()
+        print("🗑️ 删除按钮被点击")
+        
         -- 关闭所有开启的功能
         if Menu.state.R6Leg then
-            modules.LegEffects.enableR6(false, player)
+            pcall(function() modules.LegEffects.enableR6(false, player) end)
             Menu.state.R6Leg = false
         end
         if Menu.state.R15Leg then
-            modules.LegEffects.enableR15(false, player)
+            pcall(function() modules.LegEffects.enableR15(false, player) end)
             Menu.state.R15Leg = false
         end
         if Menu.state.Graphics then
-            modules.Graphics.enable(false)
+            pcall(function() modules.Graphics.enable(false) end)
             Menu.state.Graphics = false
         end
         if Menu.state.Hat then
-            modules.HatHider.enable(false, player)
+            pcall(function() modules.HatHider.enable(false, player) end)
             Menu.state.Hat = false
         end
         
         -- 恢复头部透明度
         local c = player.Character
         if c then
-            local head = _G.f and _G.f(c, "Head") or c:FindFirstChild("Head")
+            local head = c:FindFirstChild("Head")
             if head then
                 head.Transparency = 0
                 head.CanCollide = true
