@@ -2,12 +2,14 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local p = Players.LocalPlayer
 
+-- 控制台只显示这一句
+print("✅ 脚本加载成功")
+
 local function loadModule(url, name)
     local success, moduleFn = pcall(function()
         return game:HttpGet(url)
     end)
     if not success or not moduleFn then
-        print("❌ " .. name .. " 加载失败")
         return nil
     end
     
@@ -16,10 +18,8 @@ local function loadModule(url, name)
     end)
     
     if not success then
-        print("❌ " .. name .. " 编译失败")
         return nil
     end
-    print("✅ " .. name .. " 加载成功")
     return result
 end
 
@@ -39,46 +39,42 @@ local moduleUrls = {
 -- 加载Finder
 local Finder = loadModule(moduleUrls.Finder, "Finder")
 if not Finder then
-    print("❌ Finder加载失败，请检查网络")
     return
 end
 
 _G.f = Finder.find
-print("✅ Finder全局函数已设置")
 
 -- 加载公告系统
 local Notification = loadModule(moduleUrls.Notification, "Notification")
 
--- ========== 按顺序显示公告 ==========
+-- ========== 公告系统：立即连续弹出 ==========
 if Notification then
     -- 第一个公告：注入成功（显示3秒）
+    Notification.show(
+        "🚀 LYM 脚本注入成功",
+        "欢迎 " .. p.Name,
+        3,
+        "success"
+    )
+    
+    -- 第二个公告：功能提示（延迟0.5秒弹出，显示5秒）
     task.spawn(function()
+        task.wait(0.5)
         Notification.show(
-            "👁️👅👁️ LYM 脚本注入成功",
-            "欢迎 " .. p.Name,
-            3,  -- 3秒消失
-            "success"
-        )
-        
-  
-        task.wait(3.3)
-        
-        
-        Notification.show(
-            "😝 功能提示",
+            "📢 功能提示",
             "无头效果已开启 | 点击FPS打开菜单",
-            5,  
+            5,  -- 5秒消失（更慢）
             "info"
         )
-        
-       
-        task.wait(5.3)
-        
+    end)
     
+    -- 第三个公告：准备就绪（延迟1秒弹出，显示4秒）
+    task.spawn(function()
+        task.wait(1.0)
         Notification.show(
-            "👁️👄👁️ 准备就绪",
+            "✨ 准备就绪",
             "所有功能已加载完成",
-            4,  -- 4秒消失
+            4,
             "success"
         )
     end)
@@ -93,19 +89,12 @@ local Performance = loadModule(moduleUrls.Performance, "Performance")
 local Menu = loadModule(moduleUrls.Menu, "Menu")
 local Cleanup = loadModule(moduleUrls.Cleanup, "Cleanup")
 
--- 检查核心模块
 if not Headless or not LegEffects or not Performance then
-    print("❌ 核心模块加载失败")
-    if Notification then
-        Notification.error("加载失败", "核心模块未加载", 3)
-    end
     return
 end
 
--- 状态管理
 local State = {Graphics = false, R6Leg = false, R15Leg = false, Hat = false}
 
--- 初始化
 local function init()
     Headless.init(p)
     Headless.enable(true)
@@ -146,9 +135,10 @@ end
 
 task.spawn(init)
 
--- 后台任务
+-- 头部持续检测
+local headlessActive = true
 task.spawn(function()
-    while true do
+    while headlessActive do
         task.wait(1)
         local c = p.Character
         if c then
@@ -156,6 +146,16 @@ task.spawn(function()
             if head and head.Transparency ~= 1 then
                 head.Transparency = 1
             end
+        end
+    end
+end)
+
+-- 面部贴图清理
+task.spawn(function()
+    while true do
+        task.wait(1)
+        local c = p.Character
+        if c then
             for _, obj in c:GetDescendants() do
                 if obj:IsA("Decal") and obj.Name:lower():find("face") then
                     obj:Destroy()
@@ -168,11 +168,11 @@ task.spawn(function()
     end
 end)
 
+-- 饰品自动隐藏
 task.spawn(function()
     while true do
-        task.wait(0.5)
-        local c = p.Character
-        if c and State and State.Hat and HatHider then
+        task.wait(1)
+        if State and State.Hat and HatHider and p.Character then
             HatHider.enable(true, p)
         end
     end
@@ -183,9 +183,3 @@ RunService.Heartbeat:Connect(function()
         LegEffects.update(p)
     end
 end)
-
-print("\n")
-print("======================================")
-print("✅ 脚本加载完毕！")
-print("======================================")
-print("\n")
