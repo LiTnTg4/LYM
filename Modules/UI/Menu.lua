@@ -19,8 +19,8 @@ function Menu.init(player, state, modules)
     r.Parent = pg
     
     local mf = Instance.new("Frame")
-    mf.Size = UDim2.new(0, ss(280, s), 0, ss(460, s))
-    mf.Position = UDim2.new(0.5, -ss(140, s), 0.5, -ss(230, s))
+    mf.Size = UDim2.new(0, ss(280, s), 0, ss(520, s))  -- 高度增加60给删除按钮
+    mf.Position = UDim2.new(0.5, -ss(140, s), 0.5, -ss(260, s))
     mf.BackgroundColor3 = Color3.fromRGB(20, 22, 28)
     mf.BackgroundTransparency = 0.05
     mf.Active = true
@@ -99,11 +99,12 @@ function Menu.init(player, state, modules)
     fl.CanvasSize = UDim2.new(0, 0, 0, ss(260, s))
     fl.Parent = mf
     
+    -- 功能按钮列表
     local its = {
         {"R6断腿", "R6Leg", Color3.fromRGB(200, 120, 80)},
         {"R15断腿", "R15Leg", Color3.fromRGB(100, 150, 200)},
         {"画质优化", "Graphics", Color3.fromRGB(0, 150, 100)},
-        {"隐藏饰品", "Hat", Color3.fromRGB(70, 110, 200)}
+        {"隐藏饰品", "Hat", Color3.fromRGB(70, 110, 200)},
     }
     
     for i, v in ipairs(its) do
@@ -161,6 +162,108 @@ function Menu.init(player, state, modules)
             end
         end)
     end
+    
+    -- ========== 删除脚本按钮 ==========
+    local deleteFrame = Instance.new("Frame")
+    deleteFrame.Size = UDim2.new(1, -ss(20, s), 0, ss(55, s))
+    deleteFrame.Position = UDim2.new(0, ss(10, s), 0, ss(400, s))
+    deleteFrame.BackgroundColor3 = Color3.fromRGB(40, 20, 20)
+    deleteFrame.BackgroundTransparency = 0.1
+    deleteFrame.Parent = mf
+    
+    local deleteCorner = Instance.new("UICorner")
+    deleteCorner.CornerRadius = UDim.new(0, 8)
+    deleteCorner.Parent = deleteFrame
+    
+    local deleteIcon = Instance.new("TextLabel")
+    deleteIcon.Size = UDim2.new(0, 30, 1, 0)
+    deleteIcon.Position = UDim2.new(0, ss(15, s), 0, 0)
+    deleteIcon.BackgroundTransparency = 1
+    deleteIcon.Text = "🗑️"
+    deleteIcon.TextSize = ss(20, s)
+    deleteIcon.TextColor3 = Color3.fromRGB(255, 100, 100)
+    deleteIcon.Font = Enum.Font.GothamBold
+    deleteIcon.Parent = deleteFrame
+    
+    local deleteText = Instance.new("TextLabel")
+    deleteText.Size = UDim2.new(1, -60, 1, 0)
+    deleteText.Position = UDim2.new(0, ss(50, s), 0, 0)
+    deleteText.BackgroundTransparency = 1
+    deleteText.Text = "删除脚本并关闭功能"
+    deleteText.TextColor3 = Color3.fromRGB(255, 200, 200)
+    deleteText.TextSize = ss(14, s)
+    deleteText.Font = Enum.Font.GothamBold
+    deleteText.TextXAlignment = Enum.TextXAlignment.Left
+    deleteText.Parent = deleteFrame
+    
+    local deleteTip = Instance.new("TextLabel")
+    deleteTip.Size = UDim2.new(1, -60, 0, 15)
+    deleteTip.Position = UDim2.new(0, ss(50, s), 0, ss(30, s))
+    deleteTip.BackgroundTransparency = 1
+    deleteTip.Text = "点击后所有功能关闭"
+    deleteTip.TextColor3 = Color3.fromRGB(200, 150, 150)
+    deleteTip.TextSize = ss(10, s)
+    deleteTip.Font = Enum.Font.Gotham
+    deleteTip.TextXAlignment = Enum.TextXAlignment.Left
+    deleteTip.Parent = deleteFrame
+    
+    local deleteButton = Instance.new("TextButton")
+    deleteButton.Size = UDim2.new(1, 0, 1, 0)
+    deleteButton.BackgroundTransparency = 1
+    deleteButton.Text = ""
+    deleteButton.Parent = deleteFrame
+    
+    -- 删除功能
+    deleteButton.MouseButton1Click:Connect(function()
+        -- 关闭所有开启的功能
+        if Menu.state.R6Leg then
+            modules.LegEffects.enableR6(false, player)
+            Menu.state.R6Leg = false
+        end
+        if Menu.state.R15Leg then
+            modules.LegEffects.enableR15(false, player)
+            Menu.state.R15Leg = false
+        end
+        if Menu.state.Graphics then
+            modules.Graphics.enable(false)
+            Menu.state.Graphics = false
+        end
+        if Menu.state.Hat then
+            modules.HatHider.enable(false, player)
+            Menu.state.Hat = false
+        end
+        
+        -- 恢复头部透明度
+        local c = player.Character
+        if c then
+            local head = _G.f and _G.f(c, "Head") or c:FindFirstChild("Head")
+            if head then
+                head.Transparency = 0
+                head.CanCollide = true
+            end
+        end
+        
+        -- 删除所有本脚本创建的GUI
+        for _, gui in ipairs(player.PlayerGui:GetChildren()) do
+            if gui.Name == "RE_Menu" or gui.Name == "PerfMonitor" or gui.Name == "LYM_Notification" then
+                gui:Destroy()
+            end
+        end
+        
+        -- 显示提示
+        local hint = Instance.new("Hint")
+        hint.Text = "✅ LYM脚本已卸载，所有功能已关闭"
+        hint.Parent = workspace
+        
+        task.spawn(function()
+            task.wait(3)
+            if hint and hint.Parent then
+                hint:Destroy()
+            end
+        end)
+        
+        print("✅ LYM脚本已卸载")
+    end)
     
     local ft = Instance.new("Frame")
     ft.Size = UDim2.new(1, -ss(20, s), 0, ss(48, s))
