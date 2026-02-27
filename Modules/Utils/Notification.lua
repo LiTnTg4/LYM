@@ -11,7 +11,6 @@ function Notification.show(title, message, duration, type)
     gui.DisplayOrder = 1000
     gui.Parent = p:WaitForChild("PlayerGui")
     
-    -- 主框架
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(0, 320, 0, 80)
     frame.Position = UDim2.new(1, -340, 0, 20)
@@ -24,7 +23,6 @@ function Notification.show(title, message, duration, type)
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = frame
     
-    -- 左侧彩色条
     local colorBar = Instance.new("Frame")
     colorBar.Size = UDim2.new(0, 4, 1, 0)
     if type == "success" then
@@ -39,7 +37,6 @@ function Notification.show(title, message, duration, type)
     colorBar.BorderSizePixel = 0
     colorBar.Parent = frame
     
-    -- 图标
     local icon = Instance.new("TextLabel")
     icon.Size = UDim2.new(0, 30, 0, 30)
     icon.Position = UDim2.new(0, 15, 0, 25)
@@ -61,7 +58,6 @@ function Notification.show(title, message, duration, type)
     icon.Font = Enum.Font.GothamBold
     icon.Parent = frame
     
-    -- 标题
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Size = UDim2.new(1, -60, 0, 25)
     titleLabel.Position = UDim2.new(0, 50, 0, 15)
@@ -73,7 +69,6 @@ function Notification.show(title, message, duration, type)
     titleLabel.TextXAlignment = Enum.TextXAlignment.Left
     titleLabel.Parent = frame
     
-    -- 消息
     local msgLabel = Instance.new("TextLabel")
     msgLabel.Size = UDim2.new(1, -60, 0, 20)
     msgLabel.Position = UDim2.new(0, 50, 0, 40)
@@ -85,7 +80,6 @@ function Notification.show(title, message, duration, type)
     msgLabel.TextXAlignment = Enum.TextXAlignment.Left
     msgLabel.Parent = frame
     
-    -- 进度条
     local progressBar = Instance.new("Frame")
     progressBar.Size = UDim2.new(1, 0, 0, 2)
     progressBar.Position = UDim2.new(0, 0, 1, -2)
@@ -96,7 +90,6 @@ function Notification.show(title, message, duration, type)
     progressBar.BorderSizePixel = 0
     progressBar.Parent = frame
     
-    -- 入场动画
     frame.Position = UDim2.new(1, -340, 0, -100)
     frame:TweenPosition(UDim2.new(1, -340, 0, 20), "Out", "Quad", 0.3, true)
     
@@ -110,7 +103,6 @@ function Notification.show(title, message, duration, type)
     gui:Destroy()
 end
 
--- 便捷方法
 function Notification.success(title, message, duration)
     Notification.show(title, message, duration, "success")
 end
