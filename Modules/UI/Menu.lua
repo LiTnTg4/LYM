@@ -56,18 +56,23 @@ function Menu.init(player, state, modules)
     tt.Position = UDim2.new(0, ss(15, s), 0, 0)
     tt.Parent = tb
     
+    -- 按钮容器（放在标题栏右侧）
+    local btnContainer = Instance.new("Frame")
+    btnContainer.Size = UDim2.new(0, ss(70, s), 1, 0)
+    btnContainer.Position = UDim2.new(1, -ss(70, s), 0, 0)
+    btnContainer.BackgroundTransparency = 1
+    btnContainer.Parent = tb
+    
     -- 最小化按钮
     local mb = Instance.new("TextButton")
-    mb.Name = "MinimizeButton"
     mb.Text = "─"
     mb.TextSize = ss(20, s)
     mb.Font = Enum.Font.GothamBold
     mb.TextColor3 = Color3.fromRGB(170, 175, 210)
     mb.BackgroundTransparency = 1
     mb.Size = UDim2.new(0, ss(35, s), 1, 0)
-    mb.Position = UDim2.new(1, -ss(70, s), 0, 0)  -- 左移给删除按钮让位
-    mb.ZIndex = 10
-    mb.Parent = tb
+    mb.Position = UDim2.new(0, 0, 0, 0)
+    mb.Parent = btnContainer
     
     if Menu.minCallback then
         mb.MouseButton1Click:Connect(Menu.minCallback)
@@ -75,16 +80,14 @@ function Menu.init(player, state, modules)
     
     -- 删除按钮
     local db = Instance.new("TextButton")
-    db.Name = "DeleteButton"
     db.Text = "✕"
     db.TextSize = ss(18, s)
     db.Font = Enum.Font.GothamBold
     db.TextColor3 = Color3.fromRGB(255, 80, 80)
     db.BackgroundTransparency = 1
     db.Size = UDim2.new(0, ss(35, s), 1, 0)
-    db.Position = UDim2.new(1, -ss(35, s), 0, 0)  -- 最右侧
-    db.ZIndex = 10
-    db.Parent = tb
+    db.Position = UDim2.new(0, ss(35, s), 0, 0)
+    db.Parent = btnContainer
     
     -- 删除功能
     db.MouseButton1Click:Connect(function()
