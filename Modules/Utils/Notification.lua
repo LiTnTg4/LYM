@@ -27,10 +27,15 @@ function Notification.show(title, message, duration, type)
     -- 左侧彩色条
     local colorBar = Instance.new("Frame")
     colorBar.Size = UDim2.new(0, 4, 1, 0)
-    colorBar.BackgroundColor3 = type == "success" and Color3.fromRGB(0, 200, 100) 
-        or type == "info" and Color3.fromRGB(0, 150, 255)
-        or type == "warning" and Color3.fromRGB(255, 170, 0)
-        or Color3.fromRGB(255, 80, 80)
+    if type == "success" then
+        colorBar.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+    elseif type == "info" then
+        colorBar.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+    elseif type == "warning" then
+        colorBar.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
+    else
+        colorBar.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+    end
     colorBar.BorderSizePixel = 0
     colorBar.Parent = frame
     
