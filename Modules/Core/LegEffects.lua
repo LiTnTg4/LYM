@@ -4,11 +4,9 @@ local LegEffects = {
     sR = {}
 }
 
--- 断腿模型
 local r6Leg = nil
 local r15Leg = nil
 
--- 安全的查找函数
 local function findPart(container, names)
     if not container then return nil end
     for _, name in ipairs(names) do
@@ -18,7 +16,6 @@ local function findPart(container, names)
     return nil
 end
 
--- 创建R6断腿模型
 local function createR6Leg()
     if r6Leg and r6Leg.Parent then r6Leg:Destroy() end
     r6Leg = Instance.new("Part")
@@ -38,7 +35,6 @@ local function createR6Leg()
     m.Parent = r6Leg
 end
 
--- 创建R15断腿模型
 local function createR15Leg()
     if r15Leg and r15Leg.Parent then r15Leg:Destroy() end
     r15Leg = Instance.new("Part")
@@ -58,37 +54,26 @@ local function createR15Leg()
     m.Parent = r15Leg
 end
 
--- R6启用
 function LegEffects.enableR6(bool, player)
     LegEffects.r6S = bool
-    
     if bool then
         if player and player.Character then
             createR6Leg()
-            
-            -- 隐藏R6右腿
             local c = player.Character
             local upper = findPart(c, {"RightUpperLeg", "Right Leg"})
             local lower = findPart(c, {"RightLowerLeg"})
             local foot = findPart(c, {"RightFoot", "Right Foot"})
-            
             if upper then upper.Transparency = 1 end
             if lower then lower.Transparency = 1 end
             if foot then foot.Transparency = 1 end
         end
     else
-        if r6Leg then
-            r6Leg:Destroy()
-            r6Leg = nil
-        end
-        
-        -- 恢复R6右腿
+        if r6Leg then r6Leg:Destroy() r6Leg = nil end
         if player and player.Character then
             local c = player.Character
             local upper = findPart(c, {"RightUpperLeg", "Right Leg"})
             local lower = findPart(c, {"RightLowerLeg"})
             local foot = findPart(c, {"RightFoot", "Right Foot"})
-            
             if upper then upper.Transparency = 0 end
             if lower then lower.Transparency = 0 end
             if foot then foot.Transparency = 0 end
@@ -96,20 +81,15 @@ function LegEffects.enableR6(bool, player)
     end
 end
 
--- R15启用
 function LegEffects.enableR15(bool, player)
     LegEffects.r15S = bool
-    
     if bool then
         if player and player.Character then
             createR15Leg()
-            
-            -- 隐藏R15右腿并保存信息
             local c = player.Character
             local upper = findPart(c, {"RightUpperLeg"})
             local lower = findPart(c, {"RightLowerLeg"})
             local foot = findPart(c, {"RightFoot", "Right Foot"})
-            
             if upper then
                 LegEffects.sR[upper] = {Transparency = upper.Transparency}
                 upper.Transparency = 1
@@ -124,28 +104,20 @@ function LegEffects.enableR15(bool, player)
             end
         end
     else
-        -- 恢复R15右腿
         for part, data in pairs(LegEffects.sR) do
             if part and part.Parent then
                 part.Transparency = data.Transparency or 0
             end
         end
         LegEffects.sR = {}
-        
-        if r15Leg then
-            r15Leg:Destroy()
-            r15Leg = nil
-        end
+        if r15Leg then r15Leg:Destroy() r15Leg = nil end
     end
 end
 
--- 更新位置（每帧调用）
 function LegEffects.update(player)
     if not player or not player.Character then return end
-    
     local c = player.Character
     
-    -- 更新R6断腿位置
     if LegEffects.r6S and r6Leg then
         local upper = findPart(c, {"RightUpperLeg", "Right Leg"})
         if upper then
@@ -154,7 +126,6 @@ function LegEffects.update(player)
         end
     end
     
-    -- 更新R15断腿位置
     if LegEffects.r15S and r15Leg then
         local upper = findPart(c, {"RightUpperLeg"})
         if upper then
