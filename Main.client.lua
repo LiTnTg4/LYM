@@ -2,7 +2,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local p = Players.LocalPlayer
 
-print("✅ 脚本加载完成")
+print("🔄 加载中... 0/9")
 
 local function loadModule(url, name)
     local success, moduleFn = pcall(function()
@@ -34,24 +34,48 @@ local moduleUrls = {
     Cleanup = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Cleanup.lua",
 }
 
-local Finder = loadModule(moduleUrls.Finder, "Finder")
-if not Finder then
-    return
+local loadedCount = 0
+local totalModules = 9
+
+local function updateProgress()
+    loadedCount = loadedCount + 1
+    print("🔄 加载中... " .. loadedCount .. "/" .. totalModules)
 end
+
+local Finder = loadModule(moduleUrls.Finder, "Finder")
+if not Finder then return end
 _G.f = Finder.find
+updateProgress()
 
 local Notification = loadModule(moduleUrls.Notification, "Notification")
+updateProgress()
+
 local Headless = loadModule(moduleUrls.Headless, "Headless")
+updateProgress()
+
 local LegEffects = loadModule(moduleUrls.LegEffects, "LegEffects")
+updateProgress()
+
 local Graphics = loadModule(moduleUrls.Graphics, "Graphics")
+updateProgress()
+
 local HatHider = loadModule(moduleUrls.HatHider, "HatHider")
+updateProgress()
+
 local Performance = loadModule(moduleUrls.Performance, "Performance")
+updateProgress()
+
 local Menu = loadModule(moduleUrls.Menu, "Menu")
+updateProgress()
+
 local Cleanup = loadModule(moduleUrls.Cleanup, "Cleanup")
+updateProgress()
 
 if not Headless or not LegEffects or not Performance then
     return
 end
+
+print("✅ 加载完成")
 
 local State = {Graphics = false, R6Leg = false, R15Leg = false, Hat = false}
 
