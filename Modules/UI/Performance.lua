@@ -47,15 +47,11 @@ function Performance.init(player, runService)
 end
 
 function Performance.show()
-    if Performance.text then 
-        Performance.text.Visible = true 
-    end
+    if Performance.text then Performance.text.Visible = true end
 end
 
 function Performance.hide()
-    if Performance.text then 
-        Performance.text.Visible = false 
-    end
+    if Performance.text then Performance.text.Visible = false end
 end
 
 function Performance.setClickCallback(cb)
