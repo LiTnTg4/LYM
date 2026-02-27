@@ -29,7 +29,6 @@ end
 local moduleUrls = {
     Finder = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Finder.lua",
     Notification = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Notification.lua",
-    Unload = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Unload.lua",
     Headless = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/Headless.lua",
     LegEffects = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/LegEffects.lua",
     Graphics = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/Graphics.lua",
@@ -47,9 +46,10 @@ if not Finder then
 end
 _G.f = Finder.find
 
--- 加载所有模块
+-- 加载公告系统
 local Notification = loadModule(moduleUrls.Notification, "Notification")
-local Unload = loadModule(moduleUrls.Unload, "Unload")
+
+-- 加载其他模块
 local Headless = loadModule(moduleUrls.Headless, "Headless")
 local LegEffects = loadModule(moduleUrls.LegEffects, "LegEffects")
 local Graphics = loadModule(moduleUrls.Graphics, "Graphics")
@@ -58,31 +58,19 @@ local Performance = loadModule(moduleUrls.Performance, "Performance")
 local Menu = loadModule(moduleUrls.Menu, "Menu")
 local Cleanup = loadModule(moduleUrls.Cleanup, "Cleanup")
 
--- 检查核心模块
 if not Headless or not LegEffects or not Performance then
     print("❌ 核心模块加载失败")
     return
 end
 
--- 状态管理
 local State = {Graphics = false, R6Leg = false, R15Leg = false, Hat = false}
 
--- 初始化函数
 local function init()
     Headless.init(p)
     Headless.enable(true)
     
     Performance.init(p, RunService)
     Performance.show()
-    
-    -- 初始化卸载按钮
-    if Unload then
-        Unload.init(p, {
-            LegEffects = LegEffects,
-            Graphics = Graphics,
-            HatHider = HatHider
-        })
-    end
     
     local menu = Menu and Menu.init(p, State, {
         LegEffects = LegEffects,
@@ -114,21 +102,47 @@ local function init()
         end)
     end
     
+    -- ========== 公告系统：按顺序弹出 ==========
     if Notification then
-        Notification.show(
-            "🚀 LYM 脚本注入成功",
-            "欢迎 " .. p.Name,
-            3,
-            "success"
-        )
+        task.spawn(function()
+            -- 第一个公告：注入成功（显示3秒）
+            Notification.show(
+                "🚀 LYM 脚本注入成功",
+                "欢迎 " .. p.Name,
+                3,
+                "success"
+            )
+            
+            -- 等待第一个公告完全消失
+            task.wait(3.3)
+            
+            -- 第二个公告：功能提示（显示5秒）
+            Notification.show(
+                "📢 功能提示",
+                "无头效果已开启 | 点击FPS打开菜单",
+                5,
+                "info"
+            )
+            
+            -- 等待第二个公告完全消失
+            task.wait(5.3)
+            
+            -- 第三个公告：准备就绪（显示4秒）
+            Notification.show(
+                "✨ 准备就绪",
+                "所有功能已加载完成",
+                4,
+                "success"
+            )
+        end)
     end
 end
 
 task.spawn(init)
 
--- 后台任务
+local headlessActive = true
 task.spawn(function()
-    while true do
+    while headlessActive do
         task.wait(1)
         local c = p.Character
         if c then
@@ -159,7 +173,7 @@ end)
 
 task.spawn(function()
     while true do
-        task.wait(0.5)
+        task.wait(1)
         if State and State.Hat and HatHider and p.Character then
             HatHider.enable(true, p)
         end
@@ -175,6 +189,5 @@ end)
 print("\n")
 print("======================================")
 print("✅ 脚本加载完毕！")
-print("📱 屏幕左侧有红色卸载按钮")
 print("======================================")
 print("\n")
