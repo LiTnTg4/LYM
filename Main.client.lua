@@ -23,7 +23,7 @@ local function loadModule(url, name)
     return result
 end
 
--- 使用jsDelivr加速（比raw.githubusercontent稳定）
+-- 使用jsDelivr加速
 local moduleUrls = {
     Finder = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Finder.lua",
     Notification = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Notification.lua",
@@ -49,13 +49,36 @@ print("✅ Finder全局函数已设置")
 -- 加载公告系统
 local Notification = loadModule(moduleUrls.Notification, "Notification")
 
--- 显示欢迎公告
+-- ========== 按顺序显示公告 ==========
 if Notification then
+    -- 第一个公告：注入成功（显示3秒）
     task.spawn(function()
         Notification.show(
-            "🚀 LYM 脚本注入成功",
+            "👁️👅👁️ LYM 脚本注入成功",
             "欢迎 " .. p.Name,
-            3,
+            3,  -- 3秒消失
+            "success"
+        )
+        
+  
+        task.wait(3.3)
+        
+        
+        Notification.show(
+            "😝 功能提示",
+            "无头效果已开启 | 点击FPS打开菜单",
+            5,  
+            "info"
+        )
+        
+       
+        task.wait(5.3)
+        
+    
+        Notification.show(
+            "👁️👄👁️ 准备就绪",
+            "所有功能已加载完成",
+            4,  -- 4秒消失
             "success"
         )
     end)
@@ -119,17 +142,6 @@ local function init()
             pcall(function() Performance.show() end)
         end)
     end
-    
-    if Notification then
-        task.spawn(function()
-            task.wait(1)
-            Notification.info(
-                "📢 功能提示",
-                "无头效果已开启 | 点击FPS打开菜单",
-                3
-            )
-        end)
-    end
 end
 
 task.spawn(init)
@@ -171,17 +183,6 @@ RunService.Heartbeat:Connect(function()
         LegEffects.update(p)
     end
 end)
-
-if Notification then
-    task.spawn(function()
-        task.wait(2)
-        Notification.success(
-            "✨ 准备就绪",
-            "所有功能已加载完成",
-            2
-        )
-    end)
-end
 
 print("\n")
 print("======================================")
