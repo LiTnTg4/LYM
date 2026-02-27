@@ -33,7 +33,6 @@ function Menu.init(player, state, modules)
     mainCorner.CornerRadius = UDim.new(0, 12)
     mainCorner.Parent = mf
     
-    -- 标题栏
     local tb = Instance.new("Frame")
     tb.Size = UDim2.new(1, 0, 0, ss(38, s))
     tb.BackgroundColor3 = Color3.fromRGB(28, 30, 38)
@@ -44,7 +43,6 @@ function Menu.init(player, state, modules)
     tbCorner.CornerRadius = UDim.new(0, 12)
     tbCorner.Parent = tb
     
-    -- 标题文字
     local tt = Instance.new("TextLabel")
     tt.Text = "Reming祝大家天天开心"
     tt.TextColor3 = Color3.fromRGB(210, 215, 255)
@@ -52,99 +50,24 @@ function Menu.init(player, state, modules)
     tt.Font = Enum.Font.GothamBold
     tt.TextXAlignment = Enum.TextXAlignment.Left
     tt.BackgroundTransparency = 1
-    tt.Size = UDim2.new(0.5, -ss(15, s), 1, 0)
+    tt.Size = UDim2.new(0.6, -ss(15, s), 1, 0)
     tt.Position = UDim2.new(0, ss(15, s), 0, 0)
     tt.Parent = tb
     
-    -- ========== 右侧按钮区域 ==========
-    local btnArea = Instance.new("Frame")
-    btnArea.Size = UDim2.new(0, ss(70, s), 1, 0)
-    btnArea.Position = UDim2.new(1, -ss(70, s), 0, 0)
-    btnArea.BackgroundTransparency = 1
-    btnArea.Parent = tb
-    
-    -- 最小化按钮
     local mb = Instance.new("TextButton")
-    mb.Name = "MinimizeButton"
     mb.Text = "─"
     mb.TextSize = ss(20, s)
     mb.Font = Enum.Font.GothamBold
     mb.TextColor3 = Color3.fromRGB(170, 175, 210)
     mb.BackgroundTransparency = 1
     mb.Size = UDim2.new(0, ss(35, s), 1, 0)
-    mb.Position = UDim2.new(0, 0, 0, 0)
-    mb.Parent = btnArea
+    mb.Position = UDim2.new(1, -ss(35, s), 0, 0)
+    mb.Parent = tb
     
     if Menu.minCallback then
         mb.MouseButton1Click:Connect(Menu.minCallback)
     end
     
-    -- 删除按钮（红色）
-    local db = Instance.new("TextButton")
-    db.Name = "DeleteButton"
-    db.Text = "✕"
-    db.TextSize = ss(18, s)
-    db.Font = Enum.Font.GothamBold
-    db.TextColor3 = Color3.fromRGB(255, 80, 80)
-    db.BackgroundTransparency = 1
-    db.Size = UDim2.new(0, ss(35, s), 1, 0)
-    db.Position = UDim2.new(0, ss(35, s), 0, 0)
-    db.Parent = btnArea
-    
-    -- 删除功能
-    db.MouseButton1Click:Connect(function()
-        print("🔴 删除按钮被点击")
-        
-        -- 关闭所有开启的功能
-        if Menu.state.R6Leg then
-            pcall(function() modules.LegEffects.enableR6(false, player) end)
-            Menu.state.R6Leg = false
-        end
-        if Menu.state.R15Leg then
-            pcall(function() modules.LegEffects.enableR15(false, player) end)
-            Menu.state.R15Leg = false
-        end
-        if Menu.state.Graphics then
-            pcall(function() modules.Graphics.enable(false) end)
-            Menu.state.Graphics = false
-        end
-        if Menu.state.Hat then
-            pcall(function() modules.HatHider.enable(false, player) end)
-            Menu.state.Hat = false
-        end
-        
-        -- 恢复头部
-        local c = player.Character
-        if c then
-            local head = c:FindFirstChild("Head")
-            if head then
-                head.Transparency = 0
-                head.CanCollide = true
-            end
-        end
-        
-        -- 删除所有GUI
-        for _, gui in ipairs(player.PlayerGui:GetChildren()) do
-            if gui.Name == "RE_Menu" or gui.Name == "PerfMonitor" or gui.Name == "LYM_Notification" then
-                gui:Destroy()
-            end
-        end
-        
-        -- 显示提示
-        local hint = Instance.new("Hint")
-        hint.Text = "✅ LYM脚本已卸载"
-        hint.Parent = workspace
-        
-        task.delay(3, function()
-            if hint and hint.Parent then
-                hint:Destroy()
-            end
-        end)
-        
-        print("✅ LYM脚本已卸载")
-    end)
-    
-    -- 用户信息栏
     local ub = Instance.new("Frame")
     ub.Size = UDim2.new(1, -ss(20, s), 0, ss(48, s))
     ub.Position = UDim2.new(0, ss(10, s), 0, ss(48, s))
@@ -167,7 +90,6 @@ function Menu.init(player, state, modules)
     un.Position = UDim2.new(0, ss(15, s), 0, 0)
     un.Parent = ub
     
-    -- 功能列表
     local fl = Instance.new("ScrollingFrame")
     fl.Size = UDim2.new(1, -ss(20, s), 0, ss(280, s))
     fl.Position = UDim2.new(0, ss(10, s), 0, ss(105, s))
@@ -240,7 +162,6 @@ function Menu.init(player, state, modules)
         end)
     end
     
-    -- 底部提示
     local ft = Instance.new("Frame")
     ft.Size = UDim2.new(1, -ss(20, s), 0, ss(48, s))
     ft.Position = UDim2.new(0, ss(10, s), 1, -ss(50, s))
