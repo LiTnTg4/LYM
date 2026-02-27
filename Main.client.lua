@@ -29,12 +29,13 @@ end
 local moduleUrls = {
     Finder = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Finder.lua",
     Notification = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Notification.lua",
+    Unload = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Unload.lua",
     Headless = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/Headless.lua",
     LegEffects = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/LegEffects.lua",
     Graphics = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/Graphics.lua",
     HatHider = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/HatHider.lua",
     Performance = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/UI/Performance.lua",
-    Menu = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/UI/Menu.lua",  -- ⚠️ 确保这个URL正确
+    Menu = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/UI/Menu.lua",
     Cleanup = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Cleanup.lua",
 }
 
@@ -46,16 +47,15 @@ if not Finder then
 end
 _G.f = Finder.find
 
--- 加载公告系统
-local Notification = loadModule(moduleUrls.Notification, "Notification")
-
 -- 加载所有模块
+local Notification = loadModule(moduleUrls.Notification, "Notification")
+local Unload = loadModule(moduleUrls.Unload, "Unload")
 local Headless = loadModule(moduleUrls.Headless, "Headless")
 local LegEffects = loadModule(moduleUrls.LegEffects, "LegEffects")
 local Graphics = loadModule(moduleUrls.Graphics, "Graphics")
 local HatHider = loadModule(moduleUrls.HatHider, "HatHider")
 local Performance = loadModule(moduleUrls.Performance, "Performance")
-local Menu = loadModule(moduleUrls.Menu, "Menu")  -- ⚠️ 加载菜单模块
+local Menu = loadModule(moduleUrls.Menu, "Menu")
 local Cleanup = loadModule(moduleUrls.Cleanup, "Cleanup")
 
 -- 检查核心模块
@@ -75,7 +75,15 @@ local function init()
     Performance.init(p, RunService)
     Performance.show()
     
-    -- ⚠️ 关键：初始化菜单并保存到变量
+    -- 初始化卸载按钮
+    if Unload then
+        Unload.init(p, {
+            LegEffects = LegEffects,
+            Graphics = Graphics,
+            HatHider = HatHider
+        })
+    end
+    
     local menu = Menu and Menu.init(p, State, {
         LegEffects = LegEffects,
         Graphics = Graphics,
@@ -94,7 +102,6 @@ local function init()
         if State.R15Leg and LegEffects then LegEffects.enableR15(true, p) end
     end)
     
-    -- ⚠️ 连接性能显示和菜单的交互
     if Performance and menu then
         Performance.setClickCallback(function()
             pcall(function() Performance.hide() end)
@@ -107,7 +114,6 @@ local function init()
         end)
     end
     
-    -- 显示欢迎公告
     if Notification then
         Notification.show(
             "🚀 LYM 脚本注入成功",
@@ -166,47 +172,9 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- ========== 手机版卸载指令 ==========
-p.Chatted:Connect(function(message)
-    if message == "/unload" or message == "/卸载" then
-        print("🔴 卸载脚本...")
-        
-        -- 关闭所有功能
-        if LegEffects then
-            pcall(function() 
-                if LegEffects.enableR6 then LegEffects.enableR6(false, p) end
-                if LegEffects.enableR15 then LegEffects.enableR15(false, p) end
-            end)
-        end
-        if Graphics then pcall(function() Graphics.enable(false) end) end
-        if HatHider then pcall(function() HatHider.enable(false, p) end) end
-        
-        -- 恢复头部
-        local c = p.Character
-        if c then
-            local head = c:FindFirstChild("Head")
-            if head then head.Transparency = 0 end
-        end
-        
-        -- 删除GUI
-        for _, gui in ipairs(p.PlayerGui:GetChildren()) do
-            if gui.Name == "RE_Menu" or gui.Name == "PerfMonitor" or gui.Name == "LYM_Notification" then
-                gui:Destroy()
-            end
-        end
-        
-        local hint = Instance.new("Hint")
-        hint.Text = "✅ LYM脚本已卸载"
-        hint.Parent = workspace
-        task.delay(3, function() if hint then hint:Destroy() end end)
-        
-        print("✅ 已卸载")
-    end
-end)
-
 print("\n")
 print("======================================")
 print("✅ 脚本加载完毕！")
-print("📱 聊天输入 /unload 可卸载")
+print("📱 屏幕左侧有红色卸载按钮")
 print("======================================")
 print("\n")
