@@ -1,5 +1,6 @@
 local LegEffects = {dLeg = nil, r6S = false, r15S = false, sR = {}}
 
+-- R6专用断腿模型
 local r6Leg = nil
 local r15Leg = nil
 
@@ -41,9 +42,15 @@ end
 
 local function hR6(c)
     if not c then return end
-    local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
-    local l = _G.f(c, "RightLowerLeg")
-    local o = _G.f(c, "RightFoot") or _G.f(c, "Right Foot")
+    -- 使用 _G.f 或备选方案
+    local find = _G.f or function(container, name)
+        return container:FindFirstChild(name) or container:FindFirstChild(name:gsub(' ', ''))
+    end
+    
+    local u = find(c, "RightUpperLeg") or find(c, "Right Leg")
+    local l = find(c, "RightLowerLeg")
+    local o = find(c, "RightFoot") or find(c, "Right Foot")
+    
     local function h(p)
         if p and p.Transparency ~= 1 then
             p.Transparency = 1
@@ -60,9 +67,14 @@ end
 
 local function sR6(c)
     if not c then return end
-    local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
-    local l = _G.f(c, "RightLowerLeg")
-    local o = _G.f(c, "RightFoot") or _G.f(c, "Right Foot")
+    local find = _G.f or function(container, name)
+        return container:FindFirstChild(name) or container:FindFirstChild(name:gsub(' ', ''))
+    end
+    
+    local u = find(c, "RightUpperLeg") or find(c, "Right Leg")
+    local l = find(c, "RightLowerLeg")
+    local o = find(c, "RightFoot") or find(c, "Right Foot")
+    
     if u then u.Transparency = 0 end
     if l then l.Transparency = 0 end
     if o then o.Transparency = 0 end
@@ -70,6 +82,10 @@ end
 
 local function hR15(c)
     if not c then return end
+    local find = _G.f or function(container, name)
+        return container:FindFirstChild(name) or container:FindFirstChild(name:gsub(' ', ''))
+    end
+    
     local m = c:FindFirstChildOfClass("Humanoid")
     if not m or m.RigType ~= Enum.HumanoidRigType.R15 then return end
     
@@ -77,7 +93,7 @@ local function hR15(c)
         createR15Leg()
     end
     
-    local u = _G.f(c, "RightUpperLeg")
+    local u = find(c, "RightUpperLeg")
     if u then
         LegEffects.sR[u] = {MeshId = u.MeshId, TextureId = u.TextureID, Transparency = u.Transparency}
         u.Transparency = 1
@@ -87,13 +103,13 @@ local function hR15(c)
         end
     end
     
-    local l = _G.f(c, "RightLowerLeg")
+    local l = find(c, "RightLowerLeg")
     if l then
         LegEffects.sR[l] = {MeshId = l.MeshId, Transparency = l.Transparency}
         l.Transparency = 1
     end
     
-    local o = _G.f(c, "RightFoot") or _G.f(c, "Right Foot")
+    local o = find(c, "RightFoot") or find(c, "Right Foot")
     if o then
         LegEffects.sR[o] = {MeshId = o.MeshId, Transparency = o.Transparency}
         o.Transparency = 1
@@ -147,10 +163,14 @@ function LegEffects.enableR15(bool, player)
 end
 
 function LegEffects.update(player)
+    local find = _G.f or function(container, name)
+        return container:FindFirstChild(name) or container:FindFirstChild(name:gsub(' ', ''))
+    end
+    
     if LegEffects.r6S then
         local c = player.Character
         if c and r6Leg then
-            local u = _G.f(c, "RightUpperLeg") or _G.f(c, "Right Leg")
+            local u = find(c, "RightUpperLeg") or find(c, "Right Leg")
             if u then
                 r6Leg.Transparency = 0
                 r6Leg.CFrame = u.CFrame * CFrame.new(0, 0.7, 0)
@@ -164,7 +184,7 @@ function LegEffects.update(player)
     if LegEffects.r15S then
         local c = player.Character
         if c and r15Leg then
-            local u = _G.f(c, "RightUpperLeg")
+            local u = find(c, "RightUpperLeg")
             if u then
                 r15Leg.CFrame = u.CFrame * CFrame.new(0, 0.19, 0)
                 r15Leg.Transparency = 0
