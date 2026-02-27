@@ -2,7 +2,7 @@ local Finder = {}
 
 -- 用户白名单
 local allowedUsers = {
-    [810153056] = true,  -- Reming
+    [8101530565] = true,  -- Reming
     [8007999103] = true,  -- kgdcmb(NX_Naturally)
     [7962623059] = true,  -- NanQiu
     [7123752351] = true,  -- jjbrr10（我生冷漠）
