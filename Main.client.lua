@@ -2,16 +2,11 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local p = Players.LocalPlayer
 
-print("🔥 LYM 脚本启动")
-
--- 模块加载函数
 local function loadModule(url, name)
-    print("📥 加载模块:", name)
     local success, moduleFn = pcall(function()
         return game:HttpGet(url)
     end)
     if not success or not moduleFn then
-        warn("❌ 下载失败:", name)
         return nil
     end
     
@@ -20,54 +15,44 @@ local function loadModule(url, name)
     end)
     
     if not success then
-        warn("❌ 编译失败:", name)
         return nil
     end
-    print("✅ 加载成功:", name)
     return result
 end
 
--- 使用jsDelivr加速
-local GITHUB_BASE = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/"
-
+-- 使用jsDelivr加速的URL
 local moduleUrls = {
-    Finder = GITHUB_BASE .. "Utils/Finder.lua",
-    Notification = GITHUB_BASE .. "Utils/Notification.lua",  -- 新增
-    Headless = GITHUB_BASE .. "Core/Headless.lua",
-    LegEffects = GITHUB_BASE .. "Core/LegEffects.lua",
-    Graphics = GITHUB_BASE .. "Core/Graphics.lua",
-    HatHider = GITHUB_BASE .. "Core/HatHider.lua",
-    Performance = GITHUB_BASE .. "UI/Performance.lua",
-    Menu = GITHUB_BASE .. "UI/Menu.lua",
-    Cleanup = GITHUB_BASE .. "Utils/Cleanup.lua",
+    Finder = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Finder.lua",
+    Notification = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Notification.lua",
+    Headless = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/Headless.lua",
+    LegEffects = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/LegEffects.lua",
+    Graphics = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/Graphics.lua",
+    HatHider = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/HatHider.lua",
+    Performance = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/UI/Performance.lua",
+    Menu = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/UI/Menu.lua",
+    Cleanup = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Cleanup.lua",
 }
 
--- 加载Finder（包含验证）
+-- 先加载Finder
 local Finder = loadModule(moduleUrls.Finder, "Finder")
-if not Finder then 
+if not Finder then
     print("❌ Finder加载失败")
     return
 end
+
+_G.f = Finder.find
 
 -- 加载公告系统
 local Notification = loadModule(moduleUrls.Notification, "Notification")
 
 -- 显示欢迎公告
 if Notification then
-    Notification.show(
-        "🚀 LYM 脚本注入成功",
-        "欢迎 " .. p.Name .. " | 版本 2.0",
-        4,
-        "success"
-    )
-    
-    -- 延迟显示第二个公告
     task.spawn(function()
-        task.wait(1)
-        Notification.info(
-            "📢 公告",
-            "无头效果已自动开启 | 点击FPS打开菜单",
-            3
+        Notification.show(
+            "🚀 LYM 脚本注入成功",
+            "欢迎 " .. p.Name,
+            3,
+            "success"
         )
     end)
 end
@@ -82,28 +67,14 @@ local Menu = loadModule(moduleUrls.Menu, "Menu")
 local Cleanup = loadModule(moduleUrls.Cleanup, "Cleanup")
 
 if not Headless or not LegEffects or not Performance then
-    print("❌ 核心模块加载失败")
     if Notification then
         Notification.error("加载失败", "核心模块加载失败", 3)
     end
     return
 end
 
-print("✅ 所有模块加载完成")
-
--- 显示模块加载完成公告
-if Notification then
-    Notification.success(
-        "✅ 模块加载完成",
-        "8个模块已就绪 | 功能菜单已准备",
-        2
-    )
-end
-
--- 状态管理
 local State = {Graphics = false, R6Leg = false, R15Leg = false, Hat = false}
 
--- 初始化函数
 local function init()
     Headless.init(p)
     Headless.enable(true)
@@ -140,13 +111,26 @@ local function init()
             pcall(function() Performance.show() end)
         end)
     end
+    
+    -- 显示功能提示
+    if Notification then
+        task.spawn(function()
+            task.wait(1)
+            Notification.info(
+                "📢 功能提示",
+                "无头效果已开启 | 点击FPS打开菜单",
+                3
+            )
+        end)
+    end
 end
 
 task.spawn(init)
 
 -- 头部持续检测
+local headlessActive = true
 task.spawn(function()
-    while true do
+    while headlessActive do
         task.wait(1)
         local c = p.Character
         if c then
@@ -179,30 +163,27 @@ end)
 -- 饰品自动隐藏
 task.spawn(function()
     while true do
-        task.wait(0.5)
-        local c = p.Character
-        if c and State and State.Hat and HatHider then
+        task.wait(1)
+        if State and State.Hat and HatHider and p.Character then
             HatHider.enable(true, p)
         end
     end
 end)
 
--- 腿部效果更新
 RunService.Heartbeat:Connect(function()
     if LegEffects and LegEffects.update then
         LegEffects.update(p)
     end
 end)
 
--- 显示启动完成公告
+-- 显示完成公告
 if Notification then
     task.spawn(function()
         task.wait(2)
-        Notification.show(
-            "✨ 所有功能就绪",
-            "点击FPS打开菜单 | 享受游戏",
-            3,
-            "success"
+        Notification.success(
+            "✨ 准备就绪",
+            "所有功能已加载完成",
+            2
         )
     end)
 end
