@@ -7,6 +7,7 @@ local function loadModule(url, name)
         return game:HttpGet(url)
     end)
     if not success or not moduleFn then
+        print("❌ " .. name .. " 加载失败")
         return nil
     end
     
@@ -15,12 +16,14 @@ local function loadModule(url, name)
     end)
     
     if not success then
+        print("❌ " .. name .. " 编译失败")
         return nil
     end
+    print("✅ " .. name .. " 加载成功")
     return result
 end
 
--- 使用jsDelivr加速的URL
+-- 使用jsDelivr加速（比raw.githubusercontent稳定）
 local moduleUrls = {
     Finder = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Finder.lua",
     Notification = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Notification.lua",
@@ -33,14 +36,15 @@ local moduleUrls = {
     Cleanup = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Cleanup.lua",
 }
 
--- 先加载Finder
+-- 加载Finder
 local Finder = loadModule(moduleUrls.Finder, "Finder")
 if not Finder then
-    print("❌ Finder加载失败")
+    print("❌ Finder加载失败，请检查网络")
     return
 end
 
 _G.f = Finder.find
+print("✅ Finder全局函数已设置")
 
 -- 加载公告系统
 local Notification = loadModule(moduleUrls.Notification, "Notification")
@@ -66,15 +70,19 @@ local Performance = loadModule(moduleUrls.Performance, "Performance")
 local Menu = loadModule(moduleUrls.Menu, "Menu")
 local Cleanup = loadModule(moduleUrls.Cleanup, "Cleanup")
 
+-- 检查核心模块
 if not Headless or not LegEffects or not Performance then
+    print("❌ 核心模块加载失败")
     if Notification then
-        Notification.error("加载失败", "核心模块加载失败", 3)
+        Notification.error("加载失败", "核心模块未加载", 3)
     end
     return
 end
 
+-- 状态管理
 local State = {Graphics = false, R6Leg = false, R15Leg = false, Hat = false}
 
+-- 初始化
 local function init()
     Headless.init(p)
     Headless.enable(true)
@@ -112,7 +120,6 @@ local function init()
         end)
     end
     
-    -- 显示功能提示
     if Notification then
         task.spawn(function()
             task.wait(1)
@@ -127,10 +134,9 @@ end
 
 task.spawn(init)
 
--- 头部持续检测
-local headlessActive = true
+-- 后台任务
 task.spawn(function()
-    while headlessActive do
+    while true do
         task.wait(1)
         local c = p.Character
         if c then
@@ -138,16 +144,6 @@ task.spawn(function()
             if head and head.Transparency ~= 1 then
                 head.Transparency = 1
             end
-        end
-    end
-end)
-
--- 面部贴图清理
-task.spawn(function()
-    while true do
-        task.wait(1)
-        local c = p.Character
-        if c then
             for _, obj in c:GetDescendants() do
                 if obj:IsA("Decal") and obj.Name:lower():find("face") then
                     obj:Destroy()
@@ -160,11 +156,11 @@ task.spawn(function()
     end
 end)
 
--- 饰品自动隐藏
 task.spawn(function()
     while true do
-        task.wait(1)
-        if State and State.Hat and HatHider and p.Character then
+        task.wait(0.5)
+        local c = p.Character
+        if c and State and State.Hat and HatHider then
             HatHider.enable(true, p)
         end
     end
@@ -176,7 +172,6 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- 显示完成公告
 if Notification then
     task.spawn(function()
         task.wait(2)
