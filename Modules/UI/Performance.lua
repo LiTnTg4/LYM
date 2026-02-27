@@ -13,7 +13,7 @@ function Performance.init(player, runService)
     Performance.text = Instance.new("TextButton")
     Performance.text.Name = "PerfText"
     Performance.text.Size = UDim2.new(0, 200, 0, 20)
-    Performance.text.Position = UDim2.new(0.5, -100, 0.5, -10)  -- 改为屏幕正中间
+    Performance.text.Position = UDim2.new(0.5, -100, 0.5, -10)
     Performance.text.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Performance.text.BackgroundTransparency = 0.3
     Performance.text.BorderSizePixel = 0
