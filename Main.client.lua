@@ -2,14 +2,14 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local p = Players.LocalPlayer
 
--- 控制台只显示这一句
-print("✅ 脚本加载成功")
+print("🔥 LYM 脚本启动")
 
 local function loadModule(url, name)
     local success, moduleFn = pcall(function()
         return game:HttpGet(url)
     end)
     if not success or not moduleFn then
+        print("❌ " .. name .. " 加载失败")
         return nil
     end
     
@@ -18,8 +18,10 @@ local function loadModule(url, name)
     end)
     
     if not success then
+        print("❌ " .. name .. " 编译失败")
         return nil
     end
+    print("✅ " .. name .. " 加载成功")
     return result
 end
 
@@ -32,71 +34,40 @@ local moduleUrls = {
     Graphics = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/Graphics.lua",
     HatHider = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Core/HatHider.lua",
     Performance = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/UI/Performance.lua",
-    Menu = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/UI/Menu.lua",
+    Menu = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/UI/Menu.lua",  -- ⚠️ 确保这个URL正确
     Cleanup = "https://cdn.jsdelivr.net/gh/LiTnTg4/LYM@main/Modules/Utils/Cleanup.lua",
 }
 
 -- 加载Finder
 local Finder = loadModule(moduleUrls.Finder, "Finder")
 if not Finder then
+    print("❌ Finder加载失败")
     return
 end
-
 _G.f = Finder.find
 
 -- 加载公告系统
 local Notification = loadModule(moduleUrls.Notification, "Notification")
 
--- ========== 公告系统：按顺序弹出 ==========
-if Notification then
-    task.spawn(function()
-        -- 第一个公告：注入成功（显示3秒）
-        Notification.show(
-            "🚀 LYM 脚本注入成功",
-            "欢迎 " .. p.Name,
-            3,
-            "success"
-        )
-        
-        -- 等待第一个公告完全消失（3秒显示 + 0.3秒动画）
-        task.wait(3.3)
-        
-        -- 第二个公告：功能提示（显示5秒）
-        Notification.show(
-            "📢 功能提示",
-            "无头效果已开启 | 点击FPS打开菜单",
-            5,  -- 5秒消失（更慢）
-            "info"
-        )
-        
-        -- 等待第二个公告完全消失（5秒 + 0.3秒动画）
-        task.wait(5.3)
-        
-        -- 第三个公告：准备就绪（显示4秒）
-        Notification.show(
-            "✨ 准备就绪",
-            "所有功能已加载完成",
-            4,
-            "success"
-        )
-    end)
-end
-
--- 加载其他模块
+-- 加载所有模块
 local Headless = loadModule(moduleUrls.Headless, "Headless")
 local LegEffects = loadModule(moduleUrls.LegEffects, "LegEffects")
 local Graphics = loadModule(moduleUrls.Graphics, "Graphics")
 local HatHider = loadModule(moduleUrls.HatHider, "HatHider")
 local Performance = loadModule(moduleUrls.Performance, "Performance")
-local Menu = loadModule(moduleUrls.Menu, "Menu")
+local Menu = loadModule(moduleUrls.Menu, "Menu")  -- ⚠️ 加载菜单模块
 local Cleanup = loadModule(moduleUrls.Cleanup, "Cleanup")
 
+-- 检查核心模块
 if not Headless or not LegEffects or not Performance then
+    print("❌ 核心模块加载失败")
     return
 end
 
+-- 状态管理
 local State = {Graphics = false, R6Leg = false, R15Leg = false, Hat = false}
 
+-- 初始化函数
 local function init()
     Headless.init(p)
     Headless.enable(true)
@@ -104,6 +75,7 @@ local function init()
     Performance.init(p, RunService)
     Performance.show()
     
+    -- ⚠️ 关键：初始化菜单并保存到变量
     local menu = Menu and Menu.init(p, State, {
         LegEffects = LegEffects,
         Graphics = Graphics,
@@ -122,6 +94,7 @@ local function init()
         if State.R15Leg and LegEffects then LegEffects.enableR15(true, p) end
     end)
     
+    -- ⚠️ 连接性能显示和菜单的交互
     if Performance and menu then
         Performance.setClickCallback(function()
             pcall(function() Performance.hide() end)
@@ -133,14 +106,23 @@ local function init()
             pcall(function() Performance.show() end)
         end)
     end
+    
+    -- 显示欢迎公告
+    if Notification then
+        Notification.show(
+            "🚀 LYM 脚本注入成功",
+            "欢迎 " .. p.Name,
+            3,
+            "success"
+        )
+    end
 end
 
 task.spawn(init)
 
--- 头部持续检测
-local headlessActive = true
+-- 后台任务
 task.spawn(function()
-    while headlessActive do
+    while true do
         task.wait(1)
         local c = p.Character
         if c then
@@ -152,7 +134,6 @@ task.spawn(function()
     end
 end)
 
--- 面部贴图清理
 task.spawn(function()
     while true do
         task.wait(1)
@@ -170,10 +151,9 @@ task.spawn(function()
     end
 end)
 
--- 饰品自动隐藏
 task.spawn(function()
     while true do
-        task.wait(1)
+        task.wait(0.5)
         if State and State.Hat and HatHider and p.Character then
             HatHider.enable(true, p)
         end
@@ -185,3 +165,48 @@ RunService.Heartbeat:Connect(function()
         LegEffects.update(p)
     end
 end)
+
+-- ========== 手机版卸载指令 ==========
+p.Chatted:Connect(function(message)
+    if message == "/unload" or message == "/卸载" then
+        print("🔴 卸载脚本...")
+        
+        -- 关闭所有功能
+        if LegEffects then
+            pcall(function() 
+                if LegEffects.enableR6 then LegEffects.enableR6(false, p) end
+                if LegEffects.enableR15 then LegEffects.enableR15(false, p) end
+            end)
+        end
+        if Graphics then pcall(function() Graphics.enable(false) end) end
+        if HatHider then pcall(function() HatHider.enable(false, p) end) end
+        
+        -- 恢复头部
+        local c = p.Character
+        if c then
+            local head = c:FindFirstChild("Head")
+            if head then head.Transparency = 0 end
+        end
+        
+        -- 删除GUI
+        for _, gui in ipairs(p.PlayerGui:GetChildren()) do
+            if gui.Name == "RE_Menu" or gui.Name == "PerfMonitor" or gui.Name == "LYM_Notification" then
+                gui:Destroy()
+            end
+        end
+        
+        local hint = Instance.new("Hint")
+        hint.Text = "✅ LYM脚本已卸载"
+        hint.Parent = workspace
+        task.delay(3, function() if hint then hint:Destroy() end end)
+        
+        print("✅ 已卸载")
+    end
+end)
+
+print("\n")
+print("======================================")
+print("✅ 脚本加载完毕！")
+print("📱 聊天输入 /unload 可卸载")
+print("======================================")
+print("\n")
