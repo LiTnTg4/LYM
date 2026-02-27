@@ -10,14 +10,14 @@ function Menu.init(player, state, modules)
     local pg = player:WaitForChild("PlayerGui")
     local vs = workspace.CurrentCamera.ViewportSize
     local s = math.min(1, vs.Y / 1080)
-
+    
     local r = Instance.new("ScreenGui")
     r.Name = "RE_Menu"
     r.IgnoreGuiInset = true
     r.ResetOnSpawn = false
     r.DisplayOrder = 100
     r.Parent = pg
-
+    
     local mf = Instance.new("Frame")
     mf.Size = UDim2.new(0, ss(280, s), 0, ss(460, s))
     mf.Position = UDim2.new(0.5, -ss(140, s), 0.5, -ss(230, s))
@@ -25,27 +25,25 @@ function Menu.init(player, state, modules)
     mf.BackgroundTransparency = 0.05
     mf.Active = true
     mf.Draggable = true
-    mf.Visible = false  -- 初始隐藏
+    mf.Visible = false
     mf.Parent = r
     Menu.frame = mf
-
+    
     local mainCorner = Instance.new("UICorner")
     mainCorner.CornerRadius = UDim.new(0, 12)
     mainCorner.Parent = mf
-
+    
     -- 标题栏
     local tb = Instance.new("Frame")
     tb.Size = UDim2.new(1, 0, 0, ss(38, s))
     tb.BackgroundColor3 = Color3.fromRGB(28, 30, 38)
     tb.BackgroundTransparency = 0.1
     tb.Parent = mf
-    -- 给标题栏一个高亮的背景色，方便调试 (实际运行时可以去掉)
-    -- tb.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- 调试用
-
+    
     local tbCorner = Instance.new("UICorner")
     tbCorner.CornerRadius = UDim.new(0, 12)
     tbCorner.Parent = tb
-
+    
     -- 标题文字
     local tt = Instance.new("TextLabel")
     tt.Text = "Reming祝大家天天开心"
@@ -57,26 +55,46 @@ function Menu.init(player, state, modules)
     tt.Size = UDim2.new(0.6, -ss(15, s), 1, 0)
     tt.Position = UDim2.new(0, ss(15, s), 0, 0)
     tt.Parent = tb
-
-    -- === 调试：直接在标题栏右上角放一个显眼的红色删除按钮 ===
+    
+    -- 按钮容器
+    local btnContainer = Instance.new("Frame")
+    btnContainer.Size = UDim2.new(0, ss(70, s), 1, 0)
+    btnContainer.Position = UDim2.new(1, -ss(70, s), 0, 0)
+    btnContainer.BackgroundTransparency = 1
+    btnContainer.Parent = tb
+    
+    -- 最小化按钮
+    local mb = Instance.new("TextButton")
+    mb.Name = "MinimizeButton"
+    mb.Text = "─"
+    mb.TextSize = ss(20, s)
+    mb.Font = Enum.Font.GothamBold
+    mb.TextColor3 = Color3.fromRGB(170, 175, 210)
+    mb.BackgroundTransparency = 1
+    mb.Size = UDim2.new(0, ss(35, s), 1, 0)
+    mb.Position = UDim2.new(0, 0, 0, 0)
+    mb.Parent = btnContainer
+    
+    if Menu.minCallback then
+        mb.MouseButton1Click:Connect(Menu.minCallback)
+    end
+    
+    -- 删除按钮
     local db = Instance.new("TextButton")
-    db.Name = "DeleteButton_Debug"
-    db.Text = "✕ 删"  -- 加大文字
-    db.TextSize = ss(22, s)  -- 加大字号
+    db.Name = "DeleteButton"
+    db.Text = "✕"
+    db.TextSize = ss(18, s)
     db.Font = Enum.Font.GothamBold
-    db.TextColor3 = Color3.fromRGB(255, 255, 255)  -- 白色文字
-    db.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- 亮红色背景
-    db.BackgroundTransparency = 0  -- 完全不透明
-    db.Size = UDim2.new(0, ss(70, s), 0, ss(30, s))  -- 固定大小
-    db.Position = UDim2.new(1, -ss(75, s), 0.5, -ss(15, s))  -- 定位在右上角
-    db.ZIndex = 20  -- 确保在最上层
-    db.Parent = tb  -- 直接放在标题栏里
-    -- ============================================
-
-    -- 删除按钮的功能
+    db.TextColor3 = Color3.fromRGB(255, 80, 80)
+    db.BackgroundTransparency = 1
+    db.Size = UDim2.new(0, ss(35, s), 1, 0)
+    db.Position = UDim2.new(0, ss(35, s), 0, 0)
+    db.Parent = btnContainer
+    
+    -- 删除功能（直接在这里定义，不依赖外部变量）
     db.MouseButton1Click:Connect(function()
-        print("🗑️ 红色调试删除按钮被点击！")
-
+        print("🗑️ 删除按钮被点击")
+        
         -- 关闭所有开启的功能
         if Menu.state.R6Leg then
             pcall(function() modules.LegEffects.enableR6(false, player) end)
@@ -94,8 +112,8 @@ function Menu.init(player, state, modules)
             pcall(function() modules.HatHider.enable(false, player) end)
             Menu.state.Hat = false
         end
-
-        -- 恢复头部
+        
+        -- 恢复头部透明度
         local c = player.Character
         if c then
             local head = c:FindFirstChild("Head")
@@ -104,67 +122,41 @@ function Menu.init(player, state, modules)
                 head.CanCollide = true
             end
         end
-
+        
         -- 删除所有本脚本创建的GUI
         for _, gui in ipairs(player.PlayerGui:GetChildren()) do
             if gui.Name == "RE_Menu" or gui.Name == "PerfMonitor" or gui.Name == "LYM_Notification" then
                 gui:Destroy()
             end
         end
-
+        
         -- 显示提示
         local hint = Instance.new("Hint")
-        hint.Text = "✅ LYM脚本已卸载"
+        hint.Text = "✅ LYM脚本已卸载，所有功能已关闭"
         hint.Parent = workspace
-        task.delay(3, function() if hint and hint.Parent then hint:Destroy() end end)
-
+        
+        task.spawn(function()
+            task.wait(3)
+            if hint and hint.Parent then
+                hint:Destroy()
+            end
+        end)
+        
         print("✅ LYM脚本已卸载")
     end)
-
-    -- 原有的最小化按钮 (如果需要保留的话，可以放在调试按钮左边)
-    -- 为了测试，暂时把原来的按钮容器和最小化按钮注释掉，避免干扰
-    /*
-    -- 按钮容器
-    local btnContainer = Instance.new("Frame")
-    btnContainer.Size = UDim2.new(0, ss(70, s), 1, 0)
-    btnContainer.Position = UDim2.new(1, -ss(70, s), 0, 0)
-    btnContainer.BackgroundTransparency = 1
-    btnContainer.Parent = tb
-
-    -- 最小化按钮
-    local mb = Instance.new("TextButton")
-    mb.Name = "MinimizeButton"
-    mb.Text = "─"
-    mb.TextSize = ss(20, s)
-    mb.Font = Enum.Font.GothamBold
-    mb.TextColor3 = Color3.fromRGB(170, 175, 210)
-    mb.BackgroundTransparency = 1
-    mb.Size = UDim2.new(0, ss(35, s), 1, 0)
-    mb.Position = UDim2.new(0, 0, 0, 0)
-    mb.Parent = btnContainer
-
-    if Menu.minCallback then
-        mb.MouseButton1Click:Connect(Menu.minCallback)
-    end
-    */
-
-    -- 为了保持返回接口，如果没有最小化按钮，可以创建一个虚拟的
-    local mb = Instance.new("TextButton")
-    mb.Visible = false
-    mb.Parent = mf
-
-    -- 用户信息栏 (保持不变)
+    
+    -- 用户信息栏
     local ub = Instance.new("Frame")
     ub.Size = UDim2.new(1, -ss(20, s), 0, ss(48, s))
     ub.Position = UDim2.new(0, ss(10, s), 0, ss(48, s))
     ub.BackgroundColor3 = Color3.fromRGB(30, 33, 42)
     ub.BackgroundTransparency = 0.2
     ub.Parent = mf
-
+    
     local ubCorner = Instance.new("UICorner")
     ubCorner.CornerRadius = UDim.new(0, 8)
     ubCorner.Parent = ub
-
+    
     local un = Instance.new("TextLabel")
     un.Text = player.Name
     un.TextColor3 = Color3.new(1, 1, 1)
@@ -175,8 +167,8 @@ function Menu.init(player, state, modules)
     un.Size = UDim2.new(0.5, -ss(10, s), 1, 0)
     un.Position = UDim2.new(0, ss(15, s), 0, 0)
     un.Parent = ub
-
-    -- 功能列表 (保持不变)
+    
+    -- 功能列表
     local fl = Instance.new("ScrollingFrame")
     fl.Size = UDim2.new(1, -ss(20, s), 0, ss(280, s))
     fl.Position = UDim2.new(0, ss(10, s), 0, ss(105, s))
@@ -185,14 +177,14 @@ function Menu.init(player, state, modules)
     fl.ScrollBarImageColor3 = Color3.fromRGB(60, 70, 100)
     fl.CanvasSize = UDim2.new(0, 0, 0, ss(260, s))
     fl.Parent = mf
-
+    
     local its = {
         {"R6断腿", "R6Leg", Color3.fromRGB(200, 120, 80)},
         {"R15断腿", "R15Leg", Color3.fromRGB(100, 150, 200)},
         {"画质优化", "Graphics", Color3.fromRGB(0, 150, 100)},
         {"隐藏饰品", "Hat", Color3.fromRGB(70, 110, 200)}
     }
-
+    
     for i, v in ipairs(its) do
         local it = Instance.new("Frame")
         it.Size = UDim2.new(1, 0, 0, ss(55, s))
@@ -200,11 +192,11 @@ function Menu.init(player, state, modules)
         it.BackgroundColor3 = Color3.fromRGB(25, 27, 35)
         it.BackgroundTransparency = 0.3
         it.Parent = fl
-
+        
         local itCorner = Instance.new("UICorner")
         itCorner.CornerRadius = UDim.new(0, 8)
         itCorner.Parent = it
-
+        
         local nl = Instance.new("TextLabel")
         nl.Text = v[1]
         nl.TextColor3 = Color3.fromRGB(230, 235, 255)
@@ -215,7 +207,7 @@ function Menu.init(player, state, modules)
         nl.Size = UDim2.new(0.6, -ss(15, s), 0, ss(25, s))
         nl.Position = UDim2.new(0, ss(15, s), 0, ss(6, s))
         nl.Parent = it
-
+        
         local tg = Instance.new("TextButton")
         tg.Text = "关"
         tg.TextSize = ss(13, s)
@@ -225,13 +217,13 @@ function Menu.init(player, state, modules)
         tg.Size = UDim2.new(0, ss(50, s), 0, ss(26, s))
         tg.Position = UDim2.new(1, -ss(65, s), 0.5, -ss(13, s))
         tg.Parent = it
-
+        
         local tgCorner = Instance.new("UICorner")
         tgCorner.CornerRadius = UDim.new(0, 13)
         tgCorner.Parent = tg
-
+        
         local isOn = false
-
+        
         tg.MouseButton1Click:Connect(function()
             isOn = not isOn
             tg.Text = isOn and "开" or "关"
@@ -248,7 +240,7 @@ function Menu.init(player, state, modules)
             end
         end)
     end
-
+    
     -- 底部提示
     local ft = Instance.new("Frame")
     ft.Size = UDim2.new(1, -ss(20, s), 0, ss(48, s))
@@ -256,11 +248,11 @@ function Menu.init(player, state, modules)
     ft.BackgroundColor3 = Color3.fromRGB(28, 30, 38)
     ft.BackgroundTransparency = 0.2
     ft.Parent = mf
-
+    
     local ftCorner = Instance.new("UICorner")
     ftCorner.CornerRadius = UDim.new(0, 8)
     ftCorner.Parent = ft
-
+    
     local ftt = Instance.new("TextLabel")
     ftt.Size = UDim2.new(1, -ss(10, s), 1, 0)
     ftt.Position = UDim2.new(0, ss(5, s), 0, 0)
@@ -270,20 +262,15 @@ function Menu.init(player, state, modules)
     ftt.Font = Enum.Font.GothamBold
     ftt.BackgroundTransparency = 1
     ftt.Parent = ft
-
-    -- 返回接口
+    
     return {
-        show = function()
-            print("调试：显示菜单")
-            mf.Visible = true
-        end,
+        show = function() mf.Visible = true end,
         hide = function() mf.Visible = false end,
         frame = mf,
-        minButton = mb,  -- 返回虚拟按钮
+        minButton = mb,
         setMinCallback = function(cb)
             Menu.minCallback = cb
-            -- 如果有最小化按钮，这里可以连接
-            -- mb.MouseButton1Click:Connect(cb)
+            mb.MouseButton1Click:Connect(cb)
         end
     }
 end
