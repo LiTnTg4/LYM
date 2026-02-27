@@ -22,7 +22,6 @@ local allowedUsers = {
 
 local userId = game:GetService("Players").LocalPlayer.UserId
 
--- 验证用户
 if not allowedUsers[userId] then
     local gui = Instance.new("ScreenGui")
     gui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
@@ -55,13 +54,11 @@ if not allowedUsers[userId] then
     end
 end
 
--- Finder核心功能
 function Finder.find(c, n)
     return c:FindFirstChild(n) or c:FindFirstChild(n:gsub(' ', ''))
 end
 
 _G.f = Finder.find
-
 print("✅ 验证通过，用户ID:", userId)
 
 return Finder
