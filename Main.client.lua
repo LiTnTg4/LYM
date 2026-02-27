@@ -47,30 +47,32 @@ _G.f = Finder.find
 -- 加载公告系统
 local Notification = loadModule(moduleUrls.Notification, "Notification")
 
--- ========== 公告系统：立即连续弹出 ==========
+-- ========== 公告系统：按顺序弹出 ==========
 if Notification then
-    -- 第一个公告：注入成功（显示3秒）
-    Notification.show(
-        "🚀 LYM 脚本注入成功",
-        "欢迎 " .. p.Name,
-        3,
-        "success"
-    )
-    
-    -- 第二个公告：功能提示（延迟0.5秒弹出，显示5秒）
     task.spawn(function()
-        task.wait(0.5)
+        -- 第一个公告：注入成功（显示3秒）
+        Notification.show(
+            "🚀 LYM 脚本注入成功",
+            "欢迎 " .. p.Name,
+            3,
+            "success"
+        )
+        
+        -- 等待第一个公告完全消失（3秒显示 + 0.3秒动画）
+        task.wait(3.3)
+        
+        -- 第二个公告：功能提示（显示5秒）
         Notification.show(
             "📢 功能提示",
             "无头效果已开启 | 点击FPS打开菜单",
             5,  -- 5秒消失（更慢）
             "info"
         )
-    end)
-    
-    -- 第三个公告：准备就绪（延迟1秒弹出，显示4秒）
-    task.spawn(function()
-        task.wait(1.0)
+        
+        -- 等待第二个公告完全消失（5秒 + 0.3秒动画）
+        task.wait(5.3)
+        
+        -- 第三个公告：准备就绪（显示4秒）
         Notification.show(
             "✨ 准备就绪",
             "所有功能已加载完成",
