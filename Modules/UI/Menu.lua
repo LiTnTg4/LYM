@@ -19,8 +19,8 @@ function Menu.init(player, state, modules)
     r.Parent = pg
     
     local mf = Instance.new("Frame")
-    mf.Size = UDim2.new(0, ss(280, s), 0, ss(460, s))
-    mf.Position = UDim2.new(0.5, -ss(140, s), 0.5, -ss(230, s))
+    mf.Size = UDim2.new(0, ss(280, s), 0, ss(520, s))  -- 增加高度给卸载按钮
+    mf.Position = UDim2.new(0.5, -ss(140, s), 0.5, -ss(260, s))
     mf.BackgroundColor3 = Color3.fromRGB(20, 22, 28)
     mf.BackgroundTransparency = 0.05
     mf.Active = true
@@ -44,7 +44,6 @@ function Menu.init(player, state, modules)
     tbCorner.CornerRadius = UDim.new(0, 12)
     tbCorner.Parent = tb
     
-    -- 标题文字
     local tt = Instance.new("TextLabel")
     tt.Text = "Reming祝大家天天开心"
     tt.TextColor3 = Color3.fromRGB(210, 215, 255)
@@ -56,94 +55,20 @@ function Menu.init(player, state, modules)
     tt.Position = UDim2.new(0, ss(15, s), 0, 0)
     tt.Parent = tb
     
-    -- 按钮容器
-    local btnContainer = Instance.new("Frame")
-    btnContainer.Size = UDim2.new(0, ss(70, s), 1, 0)
-    btnContainer.Position = UDim2.new(1, -ss(70, s), 0, 0)
-    btnContainer.BackgroundTransparency = 1
-    btnContainer.Parent = tb
-    
     -- 最小化按钮
     local mb = Instance.new("TextButton")
-    mb.Name = "MinimizeButton"
     mb.Text = "─"
     mb.TextSize = ss(20, s)
     mb.Font = Enum.Font.GothamBold
     mb.TextColor3 = Color3.fromRGB(170, 175, 210)
     mb.BackgroundTransparency = 1
     mb.Size = UDim2.new(0, ss(35, s), 1, 0)
-    mb.Position = UDim2.new(0, 0, 0, 0)
-    mb.Parent = btnContainer
+    mb.Position = UDim2.new(1, -ss(35, s), 0, 0)
+    mb.Parent = tb
     
     if Menu.minCallback then
         mb.MouseButton1Click:Connect(Menu.minCallback)
     end
-    
-    -- 删除按钮
-    local db = Instance.new("TextButton")
-    db.Name = "DeleteButton"
-    db.Text = "✕"
-    db.TextSize = ss(18, s)
-    db.Font = Enum.Font.GothamBold
-    db.TextColor3 = Color3.fromRGB(255, 80, 80)
-    db.BackgroundTransparency = 1
-    db.Size = UDim2.new(0, ss(35, s), 1, 0)
-    db.Position = UDim2.new(0, ss(35, s), 0, 0)
-    db.Parent = btnContainer
-    
-    -- 删除功能（直接在这里定义，不依赖外部变量）
-    db.MouseButton1Click:Connect(function()
-        print("🗑️ 删除按钮被点击")
-        
-        -- 关闭所有开启的功能
-        if Menu.state.R6Leg then
-            pcall(function() modules.LegEffects.enableR6(false, player) end)
-            Menu.state.R6Leg = false
-        end
-        if Menu.state.R15Leg then
-            pcall(function() modules.LegEffects.enableR15(false, player) end)
-            Menu.state.R15Leg = false
-        end
-        if Menu.state.Graphics then
-            pcall(function() modules.Graphics.enable(false) end)
-            Menu.state.Graphics = false
-        end
-        if Menu.state.Hat then
-            pcall(function() modules.HatHider.enable(false, player) end)
-            Menu.state.Hat = false
-        end
-        
-        -- 恢复头部透明度
-        local c = player.Character
-        if c then
-            local head = c:FindFirstChild("Head")
-            if head then
-                head.Transparency = 0
-                head.CanCollide = true
-            end
-        end
-        
-        -- 删除所有本脚本创建的GUI
-        for _, gui in ipairs(player.PlayerGui:GetChildren()) do
-            if gui.Name == "RE_Menu" or gui.Name == "PerfMonitor" or gui.Name == "LYM_Notification" then
-                gui:Destroy()
-            end
-        end
-        
-        -- 显示提示
-        local hint = Instance.new("Hint")
-        hint.Text = "✅ LYM脚本已卸载，所有功能已关闭"
-        hint.Parent = workspace
-        
-        task.spawn(function()
-            task.wait(3)
-            if hint and hint.Parent then
-                hint:Destroy()
-            end
-        end)
-        
-        print("✅ LYM脚本已卸载")
-    end)
     
     -- 用户信息栏
     local ub = Instance.new("Frame")
@@ -168,7 +93,7 @@ function Menu.init(player, state, modules)
     un.Position = UDim2.new(0, ss(15, s), 0, 0)
     un.Parent = ub
     
-    -- 功能列表
+    -- 功能列表滚动框
     local fl = Instance.new("ScrollingFrame")
     fl.Size = UDim2.new(1, -ss(20, s), 0, ss(280, s))
     fl.Position = UDim2.new(0, ss(10, s), 0, ss(105, s))
@@ -178,11 +103,12 @@ function Menu.init(player, state, modules)
     fl.CanvasSize = UDim2.new(0, 0, 0, ss(260, s))
     fl.Parent = mf
     
+    -- 功能按钮列表
     local its = {
         {"R6断腿", "R6Leg", Color3.fromRGB(200, 120, 80)},
         {"R15断腿", "R15Leg", Color3.fromRGB(100, 150, 200)},
         {"画质优化", "Graphics", Color3.fromRGB(0, 150, 100)},
-        {"隐藏饰品", "Hat", Color3.fromRGB(70, 110, 200)}
+        {"隐藏饰品", "Hat", Color3.fromRGB(70, 110, 200)},
     }
     
     for i, v in ipairs(its) do
@@ -240,6 +166,137 @@ function Menu.init(player, state, modules)
             end
         end)
     end
+    
+    -- ========== 醒目的卸载按钮 ==========
+    local unloadFrame = Instance.new("Frame")
+    unloadFrame.Size = UDim2.new(1, -ss(20, s), 0, ss(70, s))
+    unloadFrame.Position = UDim2.new(0, ss(10, s), 0, ss(395, s))  -- 放在功能列表下方
+    unloadFrame.BackgroundColor3 = Color3.fromRGB(180, 40, 40)  -- 深红色背景
+    unloadFrame.BackgroundTransparency = 0
+    unloadFrame.BorderSizePixel = 0
+    unloadFrame.Parent = mf
+    
+    -- 发光效果
+    local glow = Instance.new("ImageLabel")
+    glow.Size = UDim2.new(1, 10, 1, 10)
+    glow.Position = UDim2.new(0, -5, 0, -5)
+    glow.BackgroundTransparency = 1
+    glow.Image = "rbxassetid://1316045217"
+    glow.ImageColor3 = Color3.fromRGB(255, 0, 0)
+    glow.ImageTransparency = 0.7
+    glow.ScaleType = Enum.ScaleType.Slice
+    glow.SliceCenter = Rect.new(10, 10, 118, 118)
+    glow.Parent = unloadFrame
+    
+    local unloadCorner = Instance.new("UICorner")
+    unloadCorner.CornerRadius = UDim.new(0, 12)
+    unloadCorner.Parent = unloadFrame
+    
+    -- 警告图标
+    local warnIcon = Instance.new("TextLabel")
+    warnIcon.Size = UDim2.new(0, 40, 1, 0)
+    warnIcon.Position = UDim2.new(0, ss(15, s), 0, 0)
+    warnIcon.BackgroundTransparency = 1
+    warnIcon.Text = "⚠️"
+    warnIcon.TextColor3 = Color3.fromRGB(255, 255, 0)
+    warnIcon.TextSize = ss(30, s)
+    warnIcon.Font = Enum.Font.GothamBold
+    warnIcon.Parent = unloadFrame
+    
+    -- 卸载文字
+    local unloadText = Instance.new("TextLabel")
+    unloadText.Size = UDim2.new(1, -120, 0, ss(30, s))
+    unloadText.Position = UDim2.new(0, ss(60, s), 0, ss(10, s))
+    unloadText.BackgroundTransparency = 1
+    unloadText.Text = "卸载脚本"
+    unloadText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    unloadText.TextSize = ss(20, s)
+    unloadText.Font = Enum.Font.GothamBold
+    unloadText.TextXAlignment = Enum.TextXAlignment.Left
+    unloadText.Parent = unloadFrame
+    
+    -- 提示文字
+    local unloadHint = Instance.new("TextLabel")
+    unloadHint.Size = UDim2.new(1, -120, 0, ss(20, s))
+    unloadHint.Position = UDim2.new(0, ss(60, s), 0, ss(40, s))
+    unloadHint.BackgroundTransparency = 1
+    unloadHint.Text = "点击关闭所有功能并删除脚本"
+    unloadHint.TextColor3 = Color3.fromRGB(255, 200, 200)
+    unloadHint.TextSize = ss(12, s)
+    unloadHint.Font = Enum.Font.Gotham
+    unloadHint.TextXAlignment = Enum.TextXAlignment.Left
+    unloadHint.Parent = unloadFrame
+    
+    -- 垃圾桶图标
+    local trashIcon = Instance.new("TextLabel")
+    trashIcon.Size = UDim2.new(0, 40, 1, 0)
+    trashIcon.Position = UDim2.new(1, -ss(50, s), 0, 0)
+    trashIcon.BackgroundTransparency = 1
+    trashIcon.Text = "🗑️"
+    trashIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+    trashIcon.TextSize = ss(30, s)
+    trashIcon.Font = Enum.Font.GothamBold
+    trashIcon.Parent = unloadFrame
+    
+    -- 卸载按钮
+    local unloadButton = Instance.new("TextButton")
+    unloadButton.Size = UDim2.new(1, 0, 1, 0)
+    unloadButton.BackgroundTransparency = 1
+    unloadButton.Text = ""
+    unloadButton.Parent = unloadFrame
+    
+    -- 卸载功能
+    unloadButton.MouseButton1Click:Connect(function()
+        print("🔴 卸载按钮被点击")
+        
+        -- 关闭所有开启的功能
+        if Menu.state.R6Leg then
+            pcall(function() modules.LegEffects.enableR6(false, player) end)
+            Menu.state.R6Leg = false
+        end
+        if Menu.state.R15Leg then
+            pcall(function() modules.LegEffects.enableR15(false, player) end)
+            Menu.state.R15Leg = false
+        end
+        if Menu.state.Graphics then
+            pcall(function() modules.Graphics.enable(false) end)
+            Menu.state.Graphics = false
+        end
+        if Menu.state.Hat then
+            pcall(function() modules.HatHider.enable(false, player) end)
+            Menu.state.Hat = false
+        end
+        
+        -- 恢复头部
+        local c = player.Character
+        if c then
+            local head = c:FindFirstChild("Head")
+            if head then
+                head.Transparency = 0
+                head.CanCollide = true
+            end
+        end
+        
+        -- 删除所有GUI
+        for _, gui in ipairs(player.PlayerGui:GetChildren()) do
+            if gui.Name == "RE_Menu" or gui.Name == "PerfMonitor" or gui.Name == "LYM_Notification" then
+                gui:Destroy()
+            end
+        end
+        
+        -- 显示提示
+        local hint = Instance.new("Hint")
+        hint.Text = "✅ LYM脚本已卸载"
+        hint.Parent = workspace
+        
+        task.delay(3, function()
+            if hint and hint.Parent then
+                hint:Destroy()
+            end
+        end)
+        
+        print("✅ LYM脚本已卸载")
+    end)
     
     -- 底部提示
     local ft = Instance.new("Frame")
