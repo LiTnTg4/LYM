@@ -87,58 +87,58 @@ local function init()
     Headless.init(p)
     Headless.enable(true)
     
+    -- 先初始化性能监控但先不显示
+    Performance.init(p, RunService)
+    
+    local menu = Menu and Menu.init(p, State, {
+        LegEffects = LegEffects,
+        Graphics = Graphics,
+        HatHider = HatHider
+    })
+    
+    if Cleanup then
+        Cleanup.init(RunService, State)
+    end
+    
+    p.CharacterAdded:Connect(function(c)
+        task.wait(0.5)
+        if State.Hat and HatHider then HatHider.enable(true, p) end
+        if State.Graphics and Graphics then Graphics.enable(true) end
+        if State.R6Leg and LegEffects then LegEffects.enableR6(true, p) end
+        if State.R15Leg and LegEffects then LegEffects.enableR15(true, p) end
+    end)
+    
+    if Performance and menu then
+        Performance.setClickCallback(function()
+            pcall(function() Performance.hide() end)
+            pcall(function() menu.show() end)
+        end)
+        
+        menu.setMinCallback(function()
+            pcall(function() menu.hide() end)
+            pcall(function() Performance.show() end)
+        end)
+    end
+    
     if Notification then
         task.spawn(function()
             Notification.show(
-                "🚀 LYM 脚本注入成功",
+                "👁️👅👁️ Reming 脚本注入成功",
                 "欢迎 " .. p.Name,
                 3,
                 "success"
             )
             task.wait(3.8)
             
+            -- 第二个通知出现时显示性能监控
+            Performance.show()
+            
             Notification.show(
-                "📢 功能提示",
+                "🤔️ 功能提示",
                 "无头效果已开启 | 点击FPS打开菜单",
                 4,
                 "info"
             )
-            task.wait(4.8)
-            
-            -- 第三个通知已删除
-            
-            Performance.init(p, RunService)
-            Performance.show()
-            
-            local menu = Menu and Menu.init(p, State, {
-                LegEffects = LegEffects,
-                Graphics = Graphics,
-                HatHider = HatHider
-            })
-            
-            if Cleanup then
-                Cleanup.init(RunService, State)
-            end
-            
-            p.CharacterAdded:Connect(function(c)
-                task.wait(0.5)
-                if State.Hat and HatHider then HatHider.enable(true, p) end
-                if State.Graphics and Graphics then Graphics.enable(true) end
-                if State.R6Leg and LegEffects then LegEffects.enableR6(true, p) end
-                if State.R15Leg and LegEffects then LegEffects.enableR15(true, p) end
-            end)
-            
-            if Performance and menu then
-                Performance.setClickCallback(function()
-                    pcall(function() Performance.hide() end)
-                    pcall(function() menu.show() end)
-                end)
-                
-                menu.setMinCallback(function()
-                    pcall(function() menu.hide() end)
-                    pcall(function() Performance.show() end)
-                end)
-            end
         end)
     end
 end
