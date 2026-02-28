@@ -288,7 +288,7 @@ function Menu.init(player, state, modules)
         
         -- 显示提示
         local hint = Instance.new("Hint")
-        hint.Text = "✅ LYM脚本已卸载"
+        hint.Text = "✅ Reming脚本已卸载"
         hint.Parent = workspace
         
         task.delay(3, function()
