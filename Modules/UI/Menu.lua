@@ -226,15 +226,21 @@ function Menu.init(player, state, modules)
     unloadButton.MouseButton1Click:Connect(function()
         print("🔴 卸载脚本")
         
-        -- 先通过模块关闭功能（触发模块内部的恢复逻辑）
-        if Menu.state.R6Leg then
-            pcall(function() modules.LegEffects.enableR6(false, player) end)
-            Menu.state.R6Leg = false
+        -- 直接调用 LegEffects 的恢复函数
+        if modules and modules.LegEffects then
+            -- 关闭R6断腿
+            if Menu.state.R6Leg then
+                pcall(function() modules.LegEffects.enableR6(false, player) end)
+                Menu.state.R6Leg = false
+            end
+            -- 关闭R15断腿
+            if Menu.state.R15Leg then
+                pcall(function() modules.LegEffects.enableR15(false, player) end)
+                Menu.state.R15Leg = false
+            end
         end
-        if Menu.state.R15Leg then
-            pcall(function() modules.LegEffects.enableR15(false, player) end)
-            Menu.state.R15Leg = false
-        end
+        
+        -- 关闭其他功能
         if Menu.state.Graphics then
             pcall(function() modules.Graphics.enable(false) end)
             Menu.state.Graphics = false
@@ -244,10 +250,10 @@ function Menu.init(player, state, modules)
             Menu.state.Hat = false
         end
         
-        -- 等待一帧确保模块恢复完成
-        task.wait()
+        -- 额外等待确保恢复完成
+        task.wait(0.5)
         
-        -- 强制二次恢复R15腿部
+        -- 直接操作角色强制恢复
         local c = player.Character
         if c then
             -- 恢复头部
@@ -257,40 +263,19 @@ function Menu.init(player, state, modules)
                 head.CanCollide = true
             end
             
-            -- 强制恢复R15右腿
-            local upper = c:FindFirstChild("RightUpperLeg")
-            local lower = c:FindFirstChild("RightLowerLeg")
-            local foot = c:FindFirstChild("RightFoot") or c:FindFirstChild("Right Foot")
+            -- 恢复所有腿部部件
+            local legParts = {
+                "RightUpperLeg", "RightLowerLeg", "RightFoot",
+                "LeftUpperLeg", "LeftLowerLeg", "LeftFoot",
+                "Right Leg", "Left Leg"
+            }
             
-            if upper then
-                upper.Transparency = 0
-                upper.Material = Enum.Material.SmoothPlastic
-                pcall(function() 
-                    upper.MeshId = "http://www.roblox.com/asset/?id=86594251" 
-                    upper.TextureID = "http://www.roblox.com/asset/?id=86594264"
-                end)
-            end
-            if lower then
-                lower.Transparency = 0
-                lower.Material = Enum.Material.SmoothPlastic
-                pcall(function() 
-                    lower.MeshId = "http://www.roblox.com/asset/?id=86594424" 
-                    lower.TextureID = "http://www.roblox.com/asset/?id=86594433"
-                end)
-            end
-            if foot then
-                foot.Transparency = 0
-                foot.Material = Enum.Material.SmoothPlastic
-                pcall(function() 
-                    foot.MeshId = "http://www.roblox.com/asset/?id=86594590" 
-                    foot.TextureID = "http://www.roblox.com/asset/?id=86594601"
-                end)
-            end
-            
-            -- 强制恢复R6右腿
-            local r6upper = c:FindFirstChild("Right Leg")
-            if r6upper then
-                r6upper.Transparency = 0
+            for _, partName in ipairs(legParts) do
+                local part = c:FindFirstChild(partName)
+                if part then
+                    part.Transparency = 0
+                    part.Material = Enum.Material.SmoothPlastic
+                end
             end
         end
         
