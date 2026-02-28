@@ -226,6 +226,7 @@ function Menu.init(player, state, modules)
     unloadButton.MouseButton1Click:Connect(function()
         print("🔴 卸载脚本")
         
+        -- 关闭所有开启的功能
         if Menu.state.R6Leg then
             pcall(function() modules.LegEffects.enableR6(false, player) end)
             Menu.state.R6Leg = false
@@ -243,23 +244,60 @@ function Menu.init(player, state, modules)
             Menu.state.Hat = false
         end
         
+        -- 强制恢复R15腿部
         local c = player.Character
         if c then
+            -- 恢复头部
             local head = c:FindFirstChild("Head")
             if head then
                 head.Transparency = 0
                 head.CanCollide = true
             end
+            
+            -- 强制恢复R15右腿
+            local upper = c:FindFirstChild("RightUpperLeg")
+            local lower = c:FindFirstChild("RightLowerLeg")
+            local foot = c:FindFirstChild("RightFoot") or c:FindFirstChild("Right Foot")
+            
+            if upper then
+                upper.Transparency = 0
+                pcall(function() 
+                    upper.MeshId = "http://www.roblox.com/asset/?id=86594251" 
+                    upper.TextureID = "http://www.roblox.com/asset/?id=86594264"
+                end)
+            end
+            if lower then
+                lower.Transparency = 0
+                pcall(function() 
+                    lower.MeshId = "http://www.roblox.com/asset/?id=86594424" 
+                    lower.TextureID = "http://www.roblox.com/asset/?id=86594433"
+                end)
+            end
+            if foot then
+                foot.Transparency = 0
+                pcall(function() 
+                    foot.MeshId = "http://www.roblox.com/asset/?id=86594590" 
+                    foot.TextureID = "http://www.roblox.com/asset/?id=86594601"
+                end)
+            end
+            
+            -- 强制恢复R6右腿
+            local r6upper = c:FindFirstChild("Right Leg")
+            if r6upper then
+                r6upper.Transparency = 0
+            end
         end
         
+        -- 删除所有GUI
         for _, gui in ipairs(player.PlayerGui:GetChildren()) do
             if gui.Name == "RE_Menu" or gui.Name == "PerfMonitor" or gui.Name == "LYM_Notification" then
                 gui:Destroy()
             end
         end
         
+        -- 显示提示
         local hint = Instance.new("Hint")
-        hint.Text = "✅ LYM脚本已卸载"
+        hint.Text = "✅ Remimg脚本已卸载"
         hint.Parent = workspace
         
         task.delay(3, function()
