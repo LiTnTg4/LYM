@@ -19,8 +19,8 @@ function Menu.init(player, state, modules)
     r.Parent = pg
     
     local mf = Instance.new("Frame")
-    mf.Size = UDim2.new(0, ss(280, s), 0, ss(460, s))
-    mf.Position = UDim2.new(0.5, -ss(140, s), 0.5, -ss(230, s))
+    mf.Size = UDim2.new(0, ss(280, s), 0, ss(520, s))
+    mf.Position = UDim2.new(0.5, -ss(140, s), 0.5, -ss(260, s))
     mf.BackgroundColor3 = Color3.fromRGB(20, 22, 28)
     mf.BackgroundTransparency = 0.05
     mf.Active = true
@@ -91,19 +91,19 @@ function Menu.init(player, state, modules)
     un.Parent = ub
     
     local fl = Instance.new("ScrollingFrame")
-    fl.Size = UDim2.new(1, -ss(20, s), 0, ss(280, s))
+    fl.Size = UDim2.new(1, -ss(20, s), 0, ss(330, s))
     fl.Position = UDim2.new(0, ss(10, s), 0, ss(105, s))
     fl.BackgroundTransparency = 1
     fl.ScrollBarThickness = ss(2, s)
     fl.ScrollBarImageColor3 = Color3.fromRGB(60, 70, 100)
-    fl.CanvasSize = UDim2.new(0, 0, 0, ss(260, s))
+    fl.CanvasSize = UDim2.new(0, 0, 0, ss(390, s))
     fl.Parent = mf
     
     local its = {
         {"R6断腿", "R6Leg", Color3.fromRGB(200, 120, 80)},
         {"R15断腿", "R15Leg", Color3.fromRGB(100, 150, 200)},
         {"画质优化", "Graphics", Color3.fromRGB(0, 150, 100)},
-        {"隐藏饰品", "Hat", Color3.fromRGB(70, 110, 200)}
+        {"隐藏饰品", "Hat", Color3.fromRGB(70, 110, 200)},
     }
     
     for i, v in ipairs(its) do
@@ -161,6 +161,115 @@ function Menu.init(player, state, modules)
             end
         end)
     end
+    
+    -- ========== 卸载按钮 ==========
+    local unloadFrame = Instance.new("Frame")
+    unloadFrame.Size = UDim2.new(1, -ss(20, s), 0, ss(60, s))
+    unloadFrame.Position = UDim2.new(0, ss(10, s), 0, ss(255, s))
+    unloadFrame.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+    unloadFrame.BackgroundTransparency = 0
+    unloadFrame.BorderSizePixel = 0
+    unloadFrame.Parent = fl
+    
+    local unloadCorner = Instance.new("UICorner")
+    unloadCorner.CornerRadius = UDim.new(0, 8)
+    unloadCorner.Parent = unloadFrame
+    
+    local warnIcon = Instance.new("TextLabel")
+    warnIcon.Size = UDim2.new(0, 30, 1, 0)
+    warnIcon.Position = UDim2.new(0, ss(10, s), 0, 0)
+    warnIcon.BackgroundTransparency = 1
+    warnIcon.Text = "⚠️"
+    warnIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+    warnIcon.TextSize = ss(25, s)
+    warnIcon.Font = Enum.Font.GothamBold
+    warnIcon.Parent = unloadFrame
+    
+    local unloadText = Instance.new("TextLabel")
+    unloadText.Size = UDim2.new(1, -100, 0, ss(25, s))
+    unloadText.Position = UDim2.new(0, ss(45, s), 0, ss(8, s))
+    unloadText.BackgroundTransparency = 1
+    unloadText.Text = "卸载脚本"
+    unloadText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    unloadText.TextSize = ss(18, s)
+    unloadText.Font = Enum.Font.GothamBold
+    unloadText.TextXAlignment = Enum.TextXAlignment.Left
+    unloadText.Parent = unloadFrame
+    
+    local unloadTip = Instance.new("TextLabel")
+    unloadTip.Size = UDim2.new(1, -100, 0, ss(18, s))
+    unloadTip.Position = UDim2.new(0, ss(45, s), 0, ss(33, s))
+    unloadTip.BackgroundTransparency = 1
+    unloadTip.Text = "关闭所有功能并删除脚本"
+    unloadTip.TextColor3 = Color3.fromRGB(255, 200, 200)
+    unloadTip.TextSize = ss(12, s)
+    unloadTip.Font = Enum.Font.Gotham
+    unloadTip.TextXAlignment = Enum.TextXAlignment.Left
+    unloadTip.Parent = unloadFrame
+    
+    local trashIcon = Instance.new("TextLabel")
+    trashIcon.Size = UDim2.new(0, 30, 1, 0)
+    trashIcon.Position = UDim2.new(1, -ss(40, s), 0, 0)
+    trashIcon.BackgroundTransparency = 1
+    trashIcon.Text = "🗑️"
+    trashIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+    trashIcon.TextSize = ss(25, s)
+    trashIcon.Font = Enum.Font.GothamBold
+    trashIcon.Parent = unloadFrame
+    
+    local unloadButton = Instance.new("TextButton")
+    unloadButton.Size = UDim2.new(1, 0, 1, 0)
+    unloadButton.BackgroundTransparency = 1
+    unloadButton.Text = ""
+    unloadButton.Parent = unloadFrame
+    
+    unloadButton.MouseButton1Click:Connect(function()
+        print("🔴 卸载脚本")
+        
+        if Menu.state.R6Leg then
+            pcall(function() modules.LegEffects.enableR6(false, player) end)
+            Menu.state.R6Leg = false
+        end
+        if Menu.state.R15Leg then
+            pcall(function() modules.LegEffects.enableR15(false, player) end)
+            Menu.state.R15Leg = false
+        end
+        if Menu.state.Graphics then
+            pcall(function() modules.Graphics.enable(false) end)
+            Menu.state.Graphics = false
+        end
+        if Menu.state.Hat then
+            pcall(function() modules.HatHider.enable(false, player) end)
+            Menu.state.Hat = false
+        end
+        
+        local c = player.Character
+        if c then
+            local head = c:FindFirstChild("Head")
+            if head then
+                head.Transparency = 0
+                head.CanCollide = true
+            end
+        end
+        
+        for _, gui in ipairs(player.PlayerGui:GetChildren()) do
+            if gui.Name == "RE_Menu" or gui.Name == "PerfMonitor" or gui.Name == "LYM_Notification" then
+                gui:Destroy()
+            end
+        end
+        
+        local hint = Instance.new("Hint")
+        hint.Text = "✅ LYM脚本已卸载"
+        hint.Parent = workspace
+        
+        task.delay(3, function()
+            if hint and hint.Parent then
+                hint:Destroy()
+            end
+        end)
+        
+        print("✅ 已卸载")
+    end)
     
     local ft = Instance.new("Frame")
     ft.Size = UDim2.new(1, -ss(20, s), 0, ss(48, s))
