@@ -226,7 +226,7 @@ function Menu.init(player, state, modules)
     unloadButton.MouseButton1Click:Connect(function()
         print("🔴 卸载脚本")
         
-        -- 关闭所有开启的功能
+        -- 先通过模块关闭功能（触发模块内部的恢复逻辑）
         if Menu.state.R6Leg then
             pcall(function() modules.LegEffects.enableR6(false, player) end)
             Menu.state.R6Leg = false
@@ -244,7 +244,10 @@ function Menu.init(player, state, modules)
             Menu.state.Hat = false
         end
         
-        -- 强制恢复R15腿部
+        -- 等待一帧确保模块恢复完成
+        task.wait()
+        
+        -- 强制二次恢复R15腿部
         local c = player.Character
         if c then
             -- 恢复头部
@@ -261,6 +264,7 @@ function Menu.init(player, state, modules)
             
             if upper then
                 upper.Transparency = 0
+                upper.Material = Enum.Material.SmoothPlastic
                 pcall(function() 
                     upper.MeshId = "http://www.roblox.com/asset/?id=86594251" 
                     upper.TextureID = "http://www.roblox.com/asset/?id=86594264"
@@ -268,6 +272,7 @@ function Menu.init(player, state, modules)
             end
             if lower then
                 lower.Transparency = 0
+                lower.Material = Enum.Material.SmoothPlastic
                 pcall(function() 
                     lower.MeshId = "http://www.roblox.com/asset/?id=86594424" 
                     lower.TextureID = "http://www.roblox.com/asset/?id=86594433"
@@ -275,6 +280,7 @@ function Menu.init(player, state, modules)
             end
             if foot then
                 foot.Transparency = 0
+                foot.Material = Enum.Material.SmoothPlastic
                 pcall(function() 
                     foot.MeshId = "http://www.roblox.com/asset/?id=86594590" 
                     foot.TextureID = "http://www.roblox.com/asset/?id=86594601"
@@ -297,7 +303,7 @@ function Menu.init(player, state, modules)
         
         -- 显示提示
         local hint = Instance.new("Hint")
-        hint.Text = "✅ Remimg脚本已卸载"
+        hint.Text = "✅ LYM脚本已卸载"
         hint.Parent = workspace
         
         task.delay(3, function()
