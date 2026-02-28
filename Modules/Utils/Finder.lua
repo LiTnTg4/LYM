@@ -16,6 +16,8 @@ local allowedUsers = {
     [7877496317] = true,  -- Nanqiu小号
     [8257140273] = true,  -- Secular小号
     [4635001673] = true,  -- leisai小号
+    [4908424196] = true,  -- 好好奇
+    [7970286862] = true,  -- Canecz
     -- 在这里添加你的数字ID
     -- [你的ID] = true,
 }
