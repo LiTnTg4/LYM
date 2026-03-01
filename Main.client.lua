@@ -123,7 +123,7 @@ local function init()
     if Notification then
         task.spawn(function()
             Notification.show(
-                "🚀 LYM 脚本注入成功",
+                "👁️👅👁️Reming脚本注入成功",
                 "欢迎 " .. p.Name,
                 3,
                 "success"
@@ -133,7 +133,7 @@ local function init()
             Performance.show()
             
             Notification.show(
-                "📢 功能提示",
+                "🤓☝️功能提示",
                 "无头效果已开启 | 点击FPS打开菜单",
                 4,
                 "info"
