@@ -45,7 +45,7 @@ if not allowedUsers[userId] then
     text.TextColor3 = Color3.fromRGB(255, 255, 0)
     text.TextScaled = true
     text.Font = Enum.Font.SourceSansBold
-    text.Text = "⚠️ 未授权用户 ⚠️\n\n你没有权限使用此脚本\n\nQQ: 277114682"
+    text.Text = "⚠️ 脚本加载错误？ ⚠️\n\n联系我\n\nQQ: 277114682"
     text.Parent = frame
     
     wait(3)
