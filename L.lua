@@ -1,11 +1,4 @@
-完整代码
 
-```lua
---[[
-    Bloxstrap 离线整合版
-    所有文件已内置，无需网络连接
-    创建时间: 2026-03-02
-]]
 
 local cloneref = cloneref or function(...) return ... end
 local HttpService = cloneref(game:GetService('HttpService'))
