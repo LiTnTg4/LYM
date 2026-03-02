@@ -1,9 +1,6 @@
-
-
 local cloneref = cloneref or function(...) return ... end
 local HttpService = cloneref(game:GetService('HttpService'))
 
--- 创建必要的文件夹
 makefolder('Bloxstrap')
 makefolder('Bloxstrap/Main')
 makefolder('Bloxstrap/Main/Functions')
@@ -12,20 +9,7 @@ makefolder('Bloxstrap/Main/Fonts')
 makefolder('Bloxstrap/Images')
 makefolder('Bloxstrap/Logs')
 
--- ============================================
--- 1. 写入 GuiLibrary.lua (RedZ GUI库)
--- ============================================
 writefile("Bloxstrap/Main/Functions/GuiLibrary.lua", [[
---[[
-Bloxstrap: Executor Edition
-
-GuiLibrary.lua -> The GUI Library that you will see upon starting the script
-
-THIS WAS NOT MADE BY US!
-This is RedZHub GUI Library.
-Edited for usage in Bloxstrap, we do not own ANY of this code, we are using it for usage of Bloxstrap!
-]]--
-
 local MarketplaceService = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -286,8 +270,6 @@ local GetFlag, SetFlag, CheckFlag do
 			db=true;task.wait(0.1);db=false
 			
 			local Success, Encoded = pcall(function()
-				-- local _Flags = {}
-				-- for _,Flag in pairs(Flags) do _Flags[_] = Flag.Value end
 				return HttpService:JSONEncode(Flags)
 			end)
 			
@@ -522,7 +504,6 @@ local function GetColor(Instance)
 	return ""
 end
 
--- /////////// --
 function redzlib:GetIcon(index)
 	return ''
 end
@@ -737,7 +718,7 @@ function redzlib:MakeWindow(Configs)
 	
 	local Minimized, SaveSize, WaitClick
 	local Window, FirstTab = {}, false
-	function Window:Visible(bool: boolean)
+	function Window:Visible(bool)
 		game.CoreGui["redz Library V5"].Enabled = bool
 	end
 	function Window:CloseBtn()
@@ -1203,7 +1184,7 @@ function redzlib:MakeWindow(Configs)
 			        SetToggle(true)
 			    end
 			end
-			function Toggle:Toggle(bool: boolean) SetToggle(bool) end
+			function Toggle:Toggle(bool) SetToggle(bool) end
 			function Toggle:Visible(...) Funcs:ToggleVisible(Button, ...) end
 			function Toggle:Destroy() Button:Destroy() end
 			function Toggle:Callback(...) Funcs:InsertCallback(Callback, ...)() end
@@ -1758,7 +1739,7 @@ function redzlib:MakeWindow(Configs)
 				end
 			end
 			
-			function TextBox:Set(Val1: string)
+			function TextBox:Set(Val1)
 				Text = Val1
 				Funcs:FireCallback(Callback, Val1)
 				TextBoxInput.Text = Val1
@@ -1885,13 +1866,10 @@ end
 return redzlib
 ]])
 
--- ============================================
--- 2. 写入 GetFFlag.lua
--- ============================================
 writefile("Bloxstrap/Main/Functions/GetFFlag.lua", [[
-return function(flag: string, value: string?): (string, string?) -> (string?)
+return function(flag, value)
 	if type(flag) ~= "string" then return task.spawn(error, "string expected, got "..type(flag)) end
-	local FFlag: string = Bloxstrap.TouchEnabled and flag:gsub("DFInt", ""):gsub("DFFlag", ""):gsub("FFlag", ""):gsub("FInt", ""):gsub("DFString", ""):gsub("FString", "") or flag --> Removes the keyword of the FFlag, setfflag doesn't like those so we will need to remove it.
+	local FFlag = Bloxstrap.TouchEnabled and flag:gsub("DFInt", ""):gsub("DFFlag", ""):gsub("FFlag", ""):gsub("FInt", ""):gsub("DFString", ""):gsub("FString", "") or flag
 	
 	if getfflag(FFlag) ~= nil then
 		return getfflag(FFlag)
@@ -1901,16 +1879,13 @@ return function(flag: string, value: string?): (string, string?) -> (string?)
 end
 ]])
 
--- ============================================
--- 3. 写入 ToggleFFlag.lua
--- ============================================
 writefile("Bloxstrap/Main/Functions/ToggleFFlag.lua", [[
 local cloneref = cloneref or function(...) return ... end
 local HttpService = cloneref(game.GetService(game, "HttpService"))
-return function(flag: string, value: string): (string, string) -> ()
+return function(flag, value)
 	local type = type or typeof
 	if type(flag) ~= "string" then return task.spawn(error, "string expected, got "..type(flag)) end
-	local FFlag: string = Bloxstrap.TouchEnabled and flag:gsub("DFInt", ""):gsub("DFFlag", ""):gsub("FFlag", ""):gsub("FInt", ""):gsub("DFString", ""):gsub("FString", "") or flag --> Removes the keyword of the FFlag, setfflag doesn't like those so we will need to remove it.
+	local FFlag = Bloxstrap.TouchEnabled and flag:gsub("DFInt", ""):gsub("DFFlag", ""):gsub("FFlag", ""):gsub("FInt", ""):gsub("DFString", ""):gsub("FString", "") or flag
 	
 	if getfflag(FFlag) ~= nil then
 		local fflagfile = HttpService:JSONDecode(readfile("Bloxstrap/FFlags.json"))
@@ -1924,12 +1899,9 @@ return function(flag: string, value: string): (string, string) -> ()
 end;
 ]])
 
--- ============================================
--- 4. 写入 Bloxstrap.lua (主程序)
--- ============================================
 writefile("Bloxstrap/Main/Bloxstrap.lua", [[
 if not isfile("Bloxstrap/FFlags.json") then writefile("Bloxstrap/FFlags.json", "[]") end
-local function loadFunction(func: string) --> Automate the process of loading our functions
+local function loadFunction(func)
 	return loadstring(game:HttpGet("https://raw.githubusercontent.com/qwertyui-is-back/Bloxstrap/refs/heads/main/Main/Functions/"..func..".lua"))()
 end
 local loadFunc = loadFunction
@@ -1940,25 +1912,18 @@ local humanoid = lplr.Character:FindFirstChild('Humanoid');
 local HttpService = cloneref(game.GetService(game, "HttpService"))
 local UserInputService = cloneref(game.GetService(game, "UserInputService"))
 local getgenv = getgenv or _G
-local files: table = {};
-local writefile = writefile or function(name: string, src: string): (string, string) -> ()
+local files = {};
+local writefile = writefile or function(name, src)
 	files[name] = src
 end
-local isfile: () -> () = isfile or function(file: string): (string) -> (boolean)
+local isfile = isfile or function(file)
 	return readfile(file) ~= nil and true or false;
 end;
-
---[[if hookfunction then
-    hookfunction(lplr.Kick, function(...)
-        return
-    end)
-end]]
 
 getgenv().Bloxstrap = {}
     Bloxstrap.TouchEnabled = UserInputService.TouchEnabled
     Bloxstrap.Config = setmetatable({
     OofSound = false,
-    --> Engine Settings
     FPS = 120,
     AntiAliasingQuality = "Automatic",
     LightingTechnology = "Chosen by game",
@@ -1966,9 +1931,7 @@ getgenv().Bloxstrap = {}
     DisablePlayerShadows = false,
     DisablePostFX = false,
     DisableTerrainTextures = false,
-    --> Fast Flags: Unbannable
     GraySky = false,
-    --> Fast Flags: Bannable
     Desync = false,
     HitregFix = false,
     customfonttoggle = false,
@@ -1986,11 +1949,11 @@ getgenv().Bloxstrap = {}
 })
 local conf = Bloxstrap.Config
 Bloxstrap.canUpdate = false
-Bloxstrap.UpdateConfig = function(obj: string, val: any)
+Bloxstrap.UpdateConfig = function(obj, val)
 	if not Bloxstrap.canUpdate then Bloxstrap.Config = conf return end
 	Bloxstrap.Config[obj] = val
 end
-Bloxstrap.SaveConfig = function() --> Saves the config
+Bloxstrap.SaveConfig = function()
     return writefile("Bloxstrap/Main/Configs/Default.json", HttpService:JSONEncode(Bloxstrap.Config))
 end
 if isfile("Bloxstrap/Main/Configs/Default.json") then
@@ -2007,14 +1970,12 @@ local notif = function(a, b)
 end
 
 Bloxstrap.error = notif
-
 Bloxstrap.success = notif
-
 Bloxstrap.info = notif
 
-Bloxstrap.ToggleFFlag = loadFunc("ToggleFFlag") --> Toggle FFlag function
+Bloxstrap.ToggleFFlag = loadFunc("ToggleFFlag")
 Bloxstrap.GetFFlag = loadFunc("GetFFlag")
-Bloxstrap.start = function(vis: boolean) --> Start the script
+Bloxstrap.start = function(vis)
 	vis = vis or true
 
 	if not vis then
@@ -2023,18 +1984,18 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	end
 
 	getgenv().errorlog = getgenv().errorlog or "Bloxstrap/Logs/crashlog"..HttpService:GenerateGUID(false)..".txt"
-	local GUI: table = loadfile('Bloxstrap/Main/Functions/GuiLibrary.lua')() --> Loading the library
-	local main: table? = GUI:MakeWindow({ --> Create our main wibdo2
+	local GUI = loadfile('Bloxstrap/Main/Functions/GuiLibrary.lua')()
+	local main = GUI:MakeWindow({
 	    Title = "Bloxstrap",
 	    SubTitle = "",
 	    SaveFolder = "Bloxstrap/Main/Configs"
 	})
 	main:Visible(vis)
 
-	local Integrations: tab = main:MakeTab({"Integrations", "cross"}) --> Create our tab that will allow buttons and toggles
-	local FastFlags: tab = main:MakeTab({"Mods", "wrench"})
-	local EngineSettings: tab = main:MakeTab({"Engine Settings", "flag"})
-	local Appearance: tab = main:MakeTab({"Appearance", "paintbrush-2"})
+	local Integrations = main:MakeTab({"Integrations", "cross"})
+	local FastFlags = main:MakeTab({"Mods", "wrench"})
+	local EngineSettings = main:MakeTab({"Engine Settings", "flag"})
+	local Appearance = main:MakeTab({"Appearance", "paintbrush-2"})
 	Appearance:AddSection('Player')
 	local storeeffects = {}
 	local isalive = function(v)
@@ -2118,7 +2079,6 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	                end
 	            end
 	            for i,v in game.CoreGui:GetChildren() do
-	          
 	                local oldui = v:FindFirstChildWhichIsA('UIScale')
 	                if oldui then
 	                    table.insert(guisets, {oldscale = oldui.Scale, scaler = oldui})
@@ -2291,7 +2251,6 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	                table.insert(gradients, grad)
 	            end
 	        else
-	            --imagelabel.Image = game:GetService("CoreGui").TopBarApp.MenuIconHolder.TriggerPoint.Background.ScalingIcon.Image
 	            pcall(function() woahwoah:Disconnect() end)
 	            for i,v in gradients do pcall(function() v:Destroy() end) end
 	        end
@@ -2317,17 +2276,15 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	    end
 	})
 
-	--> Integrations
-	local ActivityTracking: section = Integrations:AddSection("Activity Tracking")
+	local ActivityTracking = Integrations:AddSection("Activity Tracking")
 
-	--> FastFlags
-	local FFlagEditor: section = FastFlags:AddSection("Fast Flag Editor")
+	local FFlagEditor = FastFlags:AddSection("Fast Flag Editor")
 	local usefilepath = false
-	local FFETextbox: textbox = FastFlags:AddTextBox({
+	local FFETextbox = FastFlags:AddTextBox({
 	    Name = "Paste Fast Flags (json)",
 	    Description = "Use with caution. Misusing this can lead to instability or unexpected things happening.",
 	    Default = readfile('Bloxstrap/FFlags.json'),
-	    Callback = function(call: string)
+	    Callback = function(call)
 	        writefile("Bloxstrap/FFlags.json", call)
 	        local fflags = HttpService:JSONDecode(call:gsub('"True"', "true"):gsub('"False"', "false"))
 	        for i,v in fflags do
@@ -2336,29 +2293,29 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	    end
 	})
 
-	local Presets: section = FastFlags:AddSection("Presets: Unbannable")
+	local Presets = FastFlags:AddSection("Presets: Unbannable")
 
-	local GraySky: toggle = FastFlags:AddToggle({
+	local GraySky = FastFlags:AddToggle({
 	Name = "Gray sky",
 	Description = "Turns the sky gray. (Requires rejoin)",
 	Default = Bloxstrap.Config.GraySky,
-	Callback = function(callback: boolean)
+	Callback = function(callback)
 	    Bloxstrap.UpdateConfig("GraySky", callback)
 	    Bloxstrap.ToggleFFlag("FFlagDebugSkyGray", callback)
 	end
 	})
 
-	local updatedfonts: table = {};
-	local font: string = 'Arimo'
-	local fonttdropdown: dropdown
+	local updatedfonts = {};
+	local font = 'Arimo'
+	local fonttdropdown
 	local uriekfqjkfjqekf = false
 	local currentcustomfont = nil
 	local funnycon84
-	local usecustomfont: toggle
-	local fontchanger: toggle = FastFlags:AddToggle({
+	local usecustomfont
+	local fontchanger = FastFlags:AddToggle({
 	    Name = 'Change Game Fonts',
 	    Description = 'Changes The Game font to the one you chose',
-	    Callback = function(call: boolean): () -> ()
+	    Callback = function(call)
 	    uriekfqjkfjqekf = call
 	    Bloxstrap.UpdateConfig('customfonttoggle', call);
 	    if call then
@@ -2408,7 +2365,7 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	        end
 	    end
 	})
-	local list: table = {}
+	local list = {}
 	for i,v in Enum.Font:GetEnumItems() do
 	    table.insert(list, tostring(v):split('.')[3]);
 	end
@@ -2417,7 +2374,7 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	    Description = "",
 	    Options = list,
 	    Default = Bloxstrap.Config.customfontroblox or '',
-	    Callback = function(qweqweq: string)
+	    Callback = function(qweqweq)
 	        Bloxstrap.UpdateConfig('customfontroblox', qweqweq);
 	    font = qweqweq
 	    end
@@ -2436,12 +2393,11 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	    Callback = function(val)
 	        local json = val:gsub('.ttf', '.json')
 	        if val == 'none' then
-	            --pcall(delfile, json)
 	            currentcustomfont = nil
 	            return Bloxstrap.UpdateConfig('CustomFont', '')
 	        end
 	        Bloxstrap.UpdateConfig('CustomFont', val)
-	        --if not isfile(json) then
+	        if not isfile(json) then
 	            writefile(json, HttpService:JSONEncode({name = 'font', faces = {
 	                {
 	                    name = 'Regular',
@@ -2450,7 +2406,7 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	                    assetId = getcustomasset(val)
 	                }
 	            }}))
-	        --end
+	        end
 	          currentcustomfont = Font.new(getcustomasset(json), Enum.FontWeight.Regular)
 	          if Bloxstrap.Config.customfonttoggle then
 	            fontchanger:Toggle(false)
@@ -2461,23 +2417,23 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 
 	fontchanger:Toggle(Bloxstrap.Config.customfonttoggle)
 
-	local Presets: section = FastFlags:AddSection("Presets: Bannable")
+	local Presets = FastFlags:AddSection("Presets: Bannable")
 
-	local Desync: toggle = FastFlags:AddToggle({
+	local Desync = FastFlags:AddToggle({
 	    Name = "Desync",
 	    Description = "Lags your character behind on other screens.",
 	    Default = Bloxstrap.Config.Desync,
-	    Callback = function(callback: boolean)
+	    Callback = function(callback)
 	        Bloxstrap.UpdateConfig("Desync", callback)
 	        Bloxstrap.ToggleFFlag("DFIntS2PhysicsSenderRate", callback and 38000 or 15)
 	    end
 	})
 
-	local HitregFix: toggle = FastFlags:AddToggle({
+	local HitregFix = FastFlags:AddToggle({
 	    Name = "Hitreg Fix",
 	    Description = "Makes your hitreg in most games better. (reset fflags to remove)",
 	    Default = Bloxstrap.Config.HitregFix,
-	    Callback = function(callback: boolean)
+	    Callback = function(callback)
 	        Bloxstrap.UpdateConfig("HitregFix", callback)
 	        local FFlags = [[
 	        { 
@@ -2514,8 +2470,7 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	    end
 	})
 
-	--> Engine Settings
-	local Presets: section = EngineSettings:AddSection("Presets")
+	local Presets = EngineSettings:AddSection("Presets")
 
 	local deathsoundConnection;
 	local enabled
@@ -2546,7 +2501,7 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	        end
 	    end)
 	end
-	local olddeathsound: toggle = EngineSettings:AddToggle({
+	local olddeathsound = EngineSettings:AddToggle({
 	    Name = isfile('Bloxstrap/deathsound.mp3') and 'Use custom death sound' or 'Use old death sound',
 	    Description = isfile('Bloxstrap/deathsound.mp3') and 'Gives you a custom death sound.' or "Bring back the classic 'oof' death sound.",
 	    Default = Bloxstrap.Config.OofSound,
@@ -2574,12 +2529,12 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	end)
 
 	local defaultMSAA = 0
-	local AntiAliasingQuality: dropdown = EngineSettings:AddDropdown({
+	local AntiAliasingQuality = EngineSettings:AddDropdown({
 	    Name = "Anti-aliasing quality (MSAA)",
 	    Description = "",
 	    Options = {"Automatic", "1x", "2x", "4x"},
 	    Default = Bloxstrap.Config.AntiAliasingQuality,
-	    Callback = function(msaa: string)
+	    Callback = function(msaa)
 	        if not UserInputService.TouchEnabled then return end
 	        Bloxstrap.UpdateConfig("AntiAliasingQuality", msaa)
 	        Bloxstrap.ToggleFFlag("FIntDebugForceMSAASamples", msaa:find("x") and msaa:gsub("x", "") or defaultMSAA)
@@ -2587,7 +2542,7 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	})
 
 	local shadowIntense = 1
-	local DisablePlayerShadows: toggle = EngineSettings:AddToggle({
+	local DisablePlayerShadows = EngineSettings:AddToggle({
 	    Name = "Disable player shadows",
 	    Description = "",
 	    Default = Bloxstrap.Config.DisablePlayerShadows,
@@ -2598,7 +2553,7 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	})
 
 	local disableppfx = false
-	local DisablePostFX: toggle = EngineSettings:AddToggle({
+	local DisablePostFX = EngineSettings:AddToggle({
 	    Name = "Disable post-processing effects",
 	    Description = "",
 	    Default = Bloxstrap.Config.DisablePostFX,
@@ -2609,7 +2564,7 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	})
 
 	local disableterraintex = Bloxstrap.GetFFlag("FIntTerrainArraySliceSize")
-	local DisableTerrainTextures: toggle = EngineSettings:AddToggle({
+	local DisableTerrainTextures = EngineSettings:AddToggle({
 	    Name = "Disable terrain textures",
 	    Description = "",
 	    Default = Bloxstrap.Config.DisableTerrainTextures,
@@ -2620,11 +2575,11 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	})
 
 	local origValue = Bloxstrap.GetFFlag("DFIntTaskSchedulerTargetFps")
-	local FramerateLimit: textbox = EngineSettings:AddTextBox({
+	local FramerateLimit = EngineSettings:AddTextBox({
 	    Name = "Framerate limit",
 	    Description = "Set to 0 if you want to use Roblox's native framerate unlocker.",
 	    Default = Bloxstrap.Config.FPS,
-	    Callback = function(fps: number)
+	    Callback = function(fps)
 	        if fps == nil then return end;
 	        if type(fps) == "string" then fps = tonumber(fps) end;
 	        Bloxstrap.UpdateConfig("FPS", fps);
@@ -2647,10 +2602,7 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	    end
 	})
 
-	--local usingVoxel = Bloxstrap.GetFFlag("DFFlagDebugRenderForceTechnologyVoxel")
-	--local usingShadowMap = Bloxstrap.GetFFlag("DFFlagDebugRenderForceFutureIsBrightPhase2")
-	--local usingFuture = Bloxstrap.GetFFlag("DFFlagDebugRenderForceFutureIsBrightPhase3")
-	local function changeLighting(lighting: string)
+	local function changeLighting(lighting)
 	    sethiddenproperty(game.Lighting, "Technology", lighting:find("Voxel") and "Voxel" or lighting:find("Shadow Map") and "ShadowMap" or "Future")
 	    if not UserInputService.TouchEnabled then
 	        str = lighting:lower()
@@ -2678,19 +2630,19 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	    end
 	end
 
-	local PreferredLightingTechnology: dropdown = EngineSettings:AddDropdown({
+	local PreferredLightingTechnology = EngineSettings:AddDropdown({
 	    Name = "Preferred lighting technology",
 	    Description = "Chosen one will be force enabled in all games.",
 	    Options = {"Chosen by game", "Voxel (Phase 1)", "Shadow Map (Phase 2)", "Future (Phase 3)"},
 	    Default = Bloxstrap.Config.LightingTechnology,
-	    Callback = function(light: string)
+	    Callback = function(light)
 	        Bloxstrap.UpdateConfig("LightingTechnology", light)
 	        pcall(changeLighting, light)
 	    end
 	})
 
 	local textureQual = 3
-	local function changeTextureQuality(level: string)
+	local function changeTextureQuality(level)
 	    str = level:lower()
 	    if str:find("lowest") then
 	        Bloxstrap.ToggleFFlag("DFFlagTextureQualityOverrideEnabled", true)
@@ -2724,18 +2676,17 @@ Bloxstrap.start = function(vis: boolean) --> Start the script
 	    return
 	end
 
-	local TextureQuality: dropdown = EngineSettings:AddDropdown({
+	local TextureQuality = EngineSettings:AddDropdown({
 	    Name = "Texture quality",
 	    Description = "",
 	    Options = {"Automatic", "Lowest (Requires rejoin)", "Low", "Medium", "High", "Highest"},
 	    Default = Bloxstrap.Config.TextureQuality,
-	    Callback = function(level: string)
+	    Callback = function(level)
 	        Bloxstrap.UpdateConfig("TextureQuality", level)
 	        changeTextureQuality(level)
 	    end
 	})
 
-	--> End
 	Bloxstrap.canUpdate = true
 	pcall(function()
 	local button = Instance.new('TextButton', game:GetService('CoreGui').TopBarApp.UnibarLeftFrame)
@@ -2773,9 +2724,6 @@ end
 return Bloxstrap
 ]])
 
--- ============================================
--- 5. 写入配置文件
--- ============================================
 writefile("Bloxstrap/FFlags.json", [[
 {"DFIntMaxProcessPacketsJobScaling":"10000","DFIntPlayerNetworkUpdateRate":"60","DFIntNetworkLatencyTolerance":"1","QueryServerLocation":"true","DFIntServerPhysicsUpdateRate":"60","FFlagOptimizeServerTickRate":"true","DFIntServerTickRate":"60","DisablePlayerShadows":"true","TextureQuality":"Highest","DFIntMaxProcessPacketsStepsPerCyclic":"5000","DFIntWaitOnRecvFromLoopEndedMS":"100","FFlagDebugSkyGray":"true","DFIntRaknetBandwidthPingSendEveryXSeconds":"1","DFFlagDebugRenderForceTechnologyVoxel":"false","DFIntMegaReplicatorNetworkQualityProcessorUnit":"10","DFIntRakNetResendRttMultiple":"1","DFFlagDebugRenderForceFutureIsBrightPhase3":"true","DFIntTextureQualityOverride":"2","LightingTechnology":"Future (Phase 3)","FFlagDisablePostFx":"true","DFFlagTextureQualityOverrideEnabled":"true","FIntRakNetResendBufferArrayLength":"128","DFIntCodecMaxOutgoingFrames":"10000","DisableTerrainTextures":"true","DFIntLargePacketQueueSizeCutoffMB":"1000","FFlagOptimizeNetworkTransport":"true","DisablePostFX":"true","FFlagOptimizeNetworkRouting":"true","DFIntTaskSchedulerTargetFps":"120","DFFlagDebugRenderForceFutureIsBrightPhase2":"false","DFIntRaknetBandwidthInfluxHundredthsPercentageV2":"10000","FFlagOptimizeNetwork":"true","GraySky":"true","DFIntPlayerNetworkUpdateQueueSize":"20","DFIntOptimizePingThreshold":"50","FPS":"120","FIntTerrainArraySliceSize":"0","DFIntWaitOnUpdateNetworkLoopEndedMS":"100","FIntRenderShadowIntensity":"0","DFIntMaxProcessPacketsStepsAccumulated":"0","DFIntS2PhysicsSenderRate":"15","DFIntRakNetLoopMs":"1","FIntDebugTextureManagerSkipMips":"0","DFIntNetworkPrediction":"120","DFIntCodecMaxIncomingPackets":"100","AntiAliasingQuality":"4x"}
 ]])
@@ -2788,25 +2736,14 @@ writefile("Bloxstrap/Main/Configs/PerformanceConfig.json", [[
 []
 ]])
 
--- ============================================
--- 6. 写入 icon.png (Base64 编码的简单图标 - 1x1 透明像素，避免错误)
--- 实际使用中如果不需要图标可以留空或使用默认
--- ============================================
--- 创建一个简单的 1x1 透明PNG (避免 getcustomasset 报错)
 writefile("Bloxstrap/icon.png", string.char(137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,1,0,0,0,1,8,6,0,0,0,31,21,196,137,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,0,0,9,112,72,89,115,0,0,14,195,0,0,14,195,1,199,111,168,100,0,0,0,10,73,68,65,84,8,153,99,96,0,0,0,2,0,1,226,33,156,51,0,0,0,0,73,69,78,68,174,66,96,130))
 
--- 创建一个简单的空音效文件 (避免 getcustomasset 报错)
 writefile("Bloxstrap/oofsound.mp3", "")
 
--- ============================================
--- 7. 启动程序
--- ============================================
 print("Bloxstrap 离线版安装完成！正在启动...")
 
--- 加载主程序
 local Bloxstrap = loadfile('Bloxstrap/Main/Bloxstrap.lua')()
 Bloxstrap.start(true)
 Bloxstrap.Visible(true)
 
 print("Bloxstrap 已启动！")
-]]
