@@ -27,88 +27,74 @@ if not setfflagFunc then
     return
 end
 
--- ===== 帧率最大化 =====
-pcall(function() setfflagFunc("TaskSchedulerTargetFps", "999999") end)
-pcall(function() setfflagFunc("DFIntTaskSchedulerTargetFps", "999999") end)
-pcall(function() setfflagFunc("TaskSchedulerLimitTargetFpsTo2402", "true") end)
-pcall(function() setfflagFunc("FFlagTaskSchedulerLimitTargetFpsTo2402", "true") end)
+-- MSAA抗锯齿设置为4x
+pcall(function() setfflagFunc("DebugForceMSAASamples", "4") end)
+pcall(function() setfflagFunc("FIntDebugForceMSAASamples", "4") end)
 
--- ===== 画质最低 =====
--- 纹理模糊 (16最模糊)
-pcall(function() setfflagFunc("DebugTextureManagerSkipMips", "16") end)
-pcall(function() setfflagFunc("FIntDebugTextureManagerSkipMips", "16") end)
+-- 暂停体素化（调试用）
+pcall(function() setfflagFunc("DebugPauseVoxelizer", "True") end)
+pcall(function() setfflagFunc("DFFlagDebugPauseVoxelizer", "True") end)
 
--- 纹理质量最低 (0)
-pcall(function() setfflagFunc("TextureQualityOverride", "0") end)
-pcall(function() setfflagFunc("DFIntTextureQualityOverride", "0") end)
-pcall(function() setfflagFunc("DFFlagTextureQualityOverrideEnabled", "true") end)
+-- 阴影强度设为0（完全关闭）
+pcall(function() setfflagFunc("RenderShadowIntensity", "0") end)
+pcall(function() setfflagFunc("FIntRenderShadowIntensity", "0") end)
 
--- 灰天空
-pcall(function() setfflagFunc("DebugSkyGray", "true") end)
-pcall(function() setfflagFunc("FFlagDebugSkyGray", "true") end)
+-- 阴影贴图偏差设为-1
+pcall(function() setfflagFunc("RenderShadowmapBias", "-1") end)
+pcall(function() setfflagFunc("FIntRenderShadowmapBias", "-1") end)
 
--- 草地距离最小 (0)
+-- 草地最大距离设为0（完全禁用）
 pcall(function() setfflagFunc("FRMMaxGrassDistance", "0") end)
 pcall(function() setfflagFunc("FIntFRMMaxGrassDistance", "0") end)
+
+-- 草地细节股数设为0
+pcall(function() setfflagFunc("RenderGrassDetailStrands", "0") end)
+pcall(function() setfflagFunc("FIntRenderGrassDetailStrands", "0") end)
+
+-- 草地最小距离设为0
 pcall(function() setfflagFunc("FRMMinGrassDistance", "0") end)
 pcall(function() setfflagFunc("FIntFRMMinGrassDistance", "0") end)
 
--- UI模糊最大 (100)
-pcall(function() setfflagFunc("RobloxGuiBlurIntensity", "100") end)
-pcall(function() setfflagFunc("FIntRobloxGuiBlurIntensity", "100") end)
+-- 启用统一光照12
+pcall(function() setfflagFunc("RenderUnifiedLighting12", "True") end)
+pcall(function() setfflagFunc("FFlagRenderUnifiedLighting12", "True") end)
 
--- 地形最小 (0)
-pcall(function() setfflagFunc("TerrainArraySliceSize", "0") end)
-pcall(function() setfflagFunc("FIntTerrainArraySliceSize", "0") end)
+-- UI模糊强度设为0（关闭）
+pcall(function() setfflagFunc("RobloxGuiBlurIntensity", "0") end)
+pcall(function() setfflagFunc("FIntRobloxGuiBlurIntensity", "0") end)
 
--- 抗锯齿关闭 (0)
-pcall(function() setfflagFunc("DebugForceMSAASamples", "0") end)
-pcall(function() setfflagFunc("FIntDebugForceMSAASamples", "0") end)
+-- 显示FPS计数器
+pcall(function() setfflagFunc("DebugDisplayFPS", "True") end)
+pcall(function() setfflagFunc("FFlagDebugDisplayFPS", "True") end)
 
--- ===== 渲染底层优化 =====
-pcall(function() setfflagFunc("DebugFRMQualityLevelOverride", "0") end)
-pcall(function() setfflagFunc("DFIntDebugFRMQualityLevelOverride", "0") end)
-pcall(function() setfflagFunc("RenderGpuTextureCompressor", "false") end)
-pcall(function() setfflagFunc("FFlagRenderGpuTextureCompressor", "false") end)
-pcall(function() setfflagFunc("DebugGraphicsPreferD3D11", "true") end)
-pcall(function() setfflagFunc("FFlagDebugGraphicsPreferD3D11", "true") end)
-pcall(function() setfflagFunc("FastGPULightCulling3", "false") end)
-pcall(function() setfflagFunc("FFlagFastGPULightCulling3", "false") end)
+-- 启用首选文字大小缩放
+pcall(function() setfflagFunc("EnablePreferredTextSizeScale", "True") end)
+pcall(function() setfflagFunc("FFlagEnablePreferredTextSizeScale", "True") end)
 
--- ===== 网络优化 (暴力) =====
-pcall(function() setfflagFunc("S2PhysicsSenderRate", "38000") end)
-pcall(function() setfflagFunc("DFIntS2PhysicsSenderRate", "38000") end)
-pcall(function() setfflagFunc("RakNetLoopMs", "1") end)
-pcall(function() setfflagFunc("DFIntRakNetLoopMs", "1") end)
-pcall(function() setfflagFunc("RakNetResendBufferArrayLength", "512") end)
-pcall(function() setfflagFunc("FIntRakNetResendBufferArrayLength", "512") end)
-pcall(function() setfflagFunc("ConnectionMTUSize", "1490") end)
-pcall(function() setfflagFunc("DFIntConnectionMTUSize", "1490") end)
-pcall(function() setfflagFunc("RakNetResendRttMultiple", "1") end)
-pcall(function() setfflagFunc("DFIntRakNetResendRttMultiple", "1") end)
-pcall(function() setfflagFunc("DataSenderRate", "100000") end)
-pcall(function() setfflagFunc("DFIntDataSenderRate", "100000") end)
-pcall(function() setfflagFunc("DataSenderMaxBandwidthBpsMultiplier", "1000") end)
-pcall(function() setfflagFunc("DFIntDataSenderMaxBandwidthBpsMultiplier", "1000") end)
-pcall(function() setfflagFunc("MaxFrameBufferSize", "1") end)
-pcall(function() setfflagFunc("DFIntMaxFrameBufferSize", "1") end)
+-- 在菜单中启用首选文字大小设置
+pcall(function() setfflagFunc("EnablePreferredTextSizeSettingInMenus2", "True") end)
+pcall(function() setfflagFunc("FFlagEnablePreferredTextSizeSettingInMenus2", "True") end)
+
+-- 带宽管理器默认bps
+pcall(function() setfflagFunc("BandwidthManagerApplicationDefaultBps", "96000") end)
+pcall(function() setfflagFunc("DFIntBandwidthManagerApplicationDefaultBps", "96000") end)
+
+-- 带宽管理器数据发送器最大追赶时间
+pcall(function() setfflagFunc("BandwidthManagerDataSenderMaxWorkCatchupMs", "50") end)
+pcall(function() setfflagFunc("DFIntBandwidthManagerDataSenderMaxWorkCatchupMs", "50") end)
+
+-- 资源预加载数量（最大值）
+pcall(function() setfflagFunc("AssetPreloading", "2147483647") end)
+pcall(function() setfflagFunc("DFIntAssetPreloading", "2147483647") end)
+
+-- 最大预加载资源数（最大值）
 pcall(function() setfflagFunc("NumAssetsMaxToPreload", "2147483647") end)
 pcall(function() setfflagFunc("DFIntNumAssetsMaxToPreload", "2147483647") end)
-pcall(function() setfflagFunc("ClientPacketMaxDelayMs", "1") end)
-pcall(function() setfflagFunc("DFIntClientPacketMaxDelayMs", "1") end)
-pcall(function() setfflagFunc("ClientPacketMinMicroseconds", "100") end)
-pcall(function() setfflagFunc("DFIntClientPacketMinMicroseconds", "100") end)
 
--- ===== 物理优化 =====
-pcall(function() setfflagFunc("Physics", "1") end)
-pcall(function() setfflagFunc("DFIntPhysics", "1") end)
+-- 获取玩家图片默认超时时间
+pcall(function() setfflagFunc("GetPlayerImageDefaultTimeout", "1") end)
+pcall(function() setfflagFunc("FStringGetPlayerImageDefaultTimeout", "1") end)
 
--- ===== 遥测禁用 =====
-pcall(function() setfflagFunc("FFlagDebugDisableTelemetryEphemeralStat", "True") end)
-pcall(function() setfflagFunc("FFlagDebugDisableTelemetryPoint", "True") end)
-pcall(function() setfflagFunc("FFlagDebugDisableTelemetryV2Event", "True") end)
-pcall(function() setfflagFunc("FFlagDebugDisableTelemetryV2Counter", "True") end)
-pcall(function() setfflagFunc("FFlagDebugDisableTelemetryV2Stat", "True") end)
-pcall(function() setfflagFunc("FFlagDebugDisableTelemetryEventIngest", "True") end)
-pcall(function() setfflagFunc("FFlagDebugDisableTelemetryEphemeralCounter", "True") end)
-pcall(function() setfflagFunc("FFlagAdServiceEnabled", "false") end)
+-- 打印数据Ping详细信息（调试用）
+pcall(function() setfflagFunc("DebugPrintDataPingBreakDown", "True") end)
+pcall(function() setfflagFunc("DFFlagDebugPrintDataPingBreakDown", "True") end)
