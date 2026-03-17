@@ -16,6 +16,7 @@ local allowedUsers = {
     [4908424196] = true,  -- 好好奇
     [7970286862] = true,  -- Canecz
     [5827099636] = true,  -- Sancex
+    [8106959305] = true,  -- 无断使用者
     -- 在这里添加你的数字ID
     -- [你的ID] = true,
 }
