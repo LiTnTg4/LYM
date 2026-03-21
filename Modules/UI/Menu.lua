@@ -314,7 +314,7 @@ function Menu.init(player, state, modules)
     local ftt = Instance.new("TextLabel")
     ftt.Size = UDim2.new(1, -ss(10, s), 1, 0)
     ftt.Position = UDim2.new(0, ss(5, s), 0, 0)
-    ftt.Text = "【无头自启动】我一直在掉眼泪💧"
+    ftt.Text = "我爱你们❤️"
     ftt.TextColor3 = Color3.fromRGB(180, 190, 220)
     ftt.TextSize = ss(13, s)
     ftt.Font = Enum.Font.GothamBold
