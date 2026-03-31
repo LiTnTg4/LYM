@@ -1,7 +1,11 @@
-local HatHider = {}
+local HatHider = {player = nil}
 
-function HatHider.enable(bool, player)
-    local c = player.Character
+function HatHider.init(player)
+    HatHider.player = player
+end
+
+function HatHider.enable(bool)
+    local c = HatHider.player.Character
     if not c then return end
     local kw = {"hair", "hat", "helmet", "cap", "hood", "headgear", "beanie", "visor", "accessory"}
     local t = bool and 1 or 0
