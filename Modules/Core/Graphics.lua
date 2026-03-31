@@ -1,4 +1,8 @@
-local Graphics = {active = false, materials = {}}
+local Graphics = {active = false, materials = {}, player = nil}
+
+function Graphics.init(player)
+    Graphics.player = player
+end
 
 function Graphics.enable(bool)
     Graphics.active = bool
@@ -21,7 +25,7 @@ function Graphics.enable(bool)
         end)
         for _, o in ipairs(workspace:GetDescendants()) do
             pcall(function()
-                if o:IsA("BasePart") and o.Parent ~= game:GetService("Players").LocalPlayer.Character then
+                if o:IsA("BasePart") and o.Parent ~= Graphics.player.Character then
                     if not Graphics.materials[o] then Graphics.materials[o] = o.Material end
                     o.Material = Enum.Material.Plastic
                 end
