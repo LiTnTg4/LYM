@@ -1,6 +1,6 @@
 local PerfMonitor = {}
 
-function PerfMonitor.init(player, runService, tweenService)
+function PerfMonitor.init(player, runService)
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "WastelandPerfMonitor"
     screenGui.IgnoreGuiInset = true
@@ -15,9 +15,6 @@ function PerfMonitor.init(player, runService, tweenService)
     
     local scale = getScale()
     local savedPosition = nil
-    local isHiding = false
-    local fadeOutCallback = nil
-    local fadeInCallback = nil
     
     local dragFrame = Instance.new("Frame")
     dragFrame.Size = UDim2.new(0, 0, 0, 21 * scale)
@@ -147,65 +144,8 @@ function PerfMonitor.init(player, runService, tweenService)
         fc = fc + 1
     end)
     
-    local function fadeOut(callback)
-        if isHiding then return end
-        isHiding = true
-        
-        local tween = tweenService:Create(dragFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            BackgroundTransparency = 1,
-            Position = UDim2.new(dragFrame.Position.X.Scale, dragFrame.Position.X.Offset, dragFrame.Position.Y.Scale, dragFrame.Position.Y.Offset + 15)
-        })
-        
-        local textTween = tweenService:Create(perfText, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1})
-        local frameTween = tweenService:Create(frame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 1})
-        local borderTween = tweenService:Create(border, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Transparency = 1})
-        local cursorTween = tweenService:Create(cursor, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1})
-        
-        textTween:Play()
-        frameTween:Play()
-        borderTween:Play()
-        cursorTween:Play()
-        tween:Play()
-        
-        tween.Completed:Connect(function()
-            dragFrame.Visible = false
-            if callback then callback() end
-            isHiding = false
-        end)
-    end
-    
-    local function fadeIn()
-        dragFrame.Visible = true
-        dragFrame.BackgroundTransparency = 1
-        dragFrame.Position = UDim2.new(dragFrame.Position.X.Scale, dragFrame.Position.X.Offset, dragFrame.Position.Y.Scale, dragFrame.Position.Y.Offset + 15)
-        
-        perfText.TextTransparency = 1
-        cursor.TextTransparency = 1
-        frame.BackgroundTransparency = 1
-        border.Transparency = 1
-        
-        local tween = tweenService:Create(dragFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            BackgroundTransparency = 1,
-            Position = UDim2.new(dragFrame.Position.X.Scale, dragFrame.Position.X.Offset, dragFrame.Position.Y.Scale, dragFrame.Position.Y.Offset - 15)
-        })
-        
-        local textTween = tweenService:Create(perfText, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0})
-        local cursorTween = tweenService:Create(cursor, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0})
-        local frameTween = tweenService:Create(frame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0.1})
-        local borderTween = tweenService:Create(border, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Transparency = 0.3})
-        
-        textTween:Play()
-        cursorTween:Play()
-        frameTween:Play()
-        borderTween:Play()
-        tween:Play()
-    end
-    
     return {
-        textButton = perfText,
-        fadeOut = fadeOut,
-        fadeIn = fadeIn,
-        getDragFrame = function() return dragFrame end
+        textButton = perfText
     }
 end
 
