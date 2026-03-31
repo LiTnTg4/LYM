@@ -3,7 +3,7 @@ local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local p = Players.LocalPlayer
 
-print("🔄 加载中... 0/10")
+print("🔄 加载中... 0/9")
 
 local function loadModule(url, name)
     local success, moduleFn = pcall(function()
@@ -37,7 +37,7 @@ local moduleUrls = {
 }
 
 local loadedCount = 0
-local totalModules = 10
+local totalModules = 9
 
 local function updateProgress()
     loadedCount = loadedCount + 1
@@ -93,33 +93,27 @@ local function init()
         Cleanup.init(RunService, State)
     end
     
-    -- 初始化性能监控（废土风格缩小版）
-    local perf = PerfMonitor.init(p, RunService, TweenService)
+    -- 初始化性能监控
+    local perf = PerfMonitor.init(p, RunService)
     
-    -- 初始化菜单（废土风格大字版）
+    -- 初始化菜单
     local menu = Menu.init(p, State, {
         LegEffects = LegEffects,
         Graphics = Graphics,
         HatHider = HatHider
     }, TweenService)
     
-    -- 设置菜单最小化回调
-    menu.setMinCallback(function()
-        menu.hide(function()
-            perf.fadeIn()
-        end)
+    -- 设置菜单最小化按钮回调
+    menu.setMinButtonCallback(function()
+        menu.hide()
     end)
     
     -- 点击性能监控打开/关闭菜单
     perf.textButton.MouseButton1Click:Connect(function()
-        if menu.getFrame() and menu.getFrame().Visible then
-            menu.hide(function()
-                perf.fadeIn()
-            end)
+        if menu.isVisible() then
+            menu.hide()
         else
-            perf.fadeOut(function()
-                menu.show()
-            end)
+            menu.show()
         end
     end)
     
