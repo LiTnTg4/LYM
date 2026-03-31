@@ -2,7 +2,7 @@ local LegEffects = {
     r6S = false,
     r15S = false,
     sR = {},
-    lastCheck = 0
+    player = nil
 }
 
 local r6Leg = nil
@@ -55,150 +55,82 @@ local function createR15Leg()
     m.Parent = r15Leg
 end
 
--- 强制隐藏R6腿部
 local function forceHideR6(c)
     if not c then return end
-    
     local upper = findPart(c, {"RightUpperLeg", "Right Leg"})
     local lower = findPart(c, {"RightLowerLeg"})
     local foot = findPart(c, {"RightFoot", "Right Foot"})
-    
-    if upper and upper.Transparency ~= 1 then
-        upper.Transparency = 1
-        upper.CanCollide = false
-        upper.Material = Enum.Material.SmoothPlastic
-    end
-    if lower and lower.Transparency ~= 1 then
-        lower.Transparency = 1
-        lower.CanCollide = false
-        lower.Material = Enum.Material.SmoothPlastic
-    end
-    if foot and foot.Transparency ~= 1 then
-        foot.Transparency = 1
-        foot.CanCollide = false
-        foot.Material = Enum.Material.SmoothPlastic
-    end
+    if upper then upper.Transparency = 1; upper.CanCollide = false end
+    if lower then lower.Transparency = 1; lower.CanCollide = false end
+    if foot then foot.Transparency = 1; foot.CanCollide = false end
 end
 
--- 强制显示R6腿部
 local function forceShowR6(c)
     if not c then return end
-    
     local upper = findPart(c, {"RightUpperLeg", "Right Leg"})
     local lower = findPart(c, {"RightLowerLeg"})
     local foot = findPart(c, {"RightFoot", "Right Foot"})
-    
-    if upper then
-        upper.Transparency = 0
-        upper.CanCollide = true
-    end
-    if lower then
-        lower.Transparency = 0
-        lower.CanCollide = true
-    end
-    if foot then
-        foot.Transparency = 0
-        foot.CanCollide = true
-    end
+    if upper then upper.Transparency = 0; upper.CanCollide = true end
+    if lower then lower.Transparency = 0; lower.CanCollide = true end
+    if foot then foot.Transparency = 0; foot.CanCollide = true end
 end
 
--- 强制隐藏R15腿部
 local function forceHideR15(c)
     if not c then return end
-    
     local upper = findPart(c, {"RightUpperLeg"})
     local lower = findPart(c, {"RightLowerLeg"})
     local foot = findPart(c, {"RightFoot", "Right Foot"})
-    
-    if upper and upper.Transparency ~= 1 then
-        LegEffects.sR[upper] = {Transparency = upper.Transparency}
-        upper.Transparency = 1
-    end
-    if lower and lower.Transparency ~= 1 then
-        LegEffects.sR[lower] = {Transparency = lower.Transparency}
-        lower.Transparency = 1
-    end
-    if foot and foot.Transparency ~= 1 then
-        LegEffects.sR[foot] = {Transparency = foot.Transparency}
-        foot.Transparency = 1
-    end
+    if upper then LegEffects.sR[upper] = {Transparency = upper.Transparency}; upper.Transparency = 1 end
+    if lower then LegEffects.sR[lower] = {Transparency = lower.Transparency}; lower.Transparency = 1 end
+    if foot then LegEffects.sR[foot] = {Transparency = foot.Transparency}; foot.Transparency = 1 end
 end
 
-function LegEffects.enableR6(bool, player)
+function LegEffects.init(player)
+    LegEffects.player = player
+end
+
+function LegEffects.enableR6(bool)
     LegEffects.r6S = bool
     if bool then
-        if player and player.Character then
+        if LegEffects.player.Character then
             createR6Leg()
-            forceHideR6(player.Character)
-            print("✅ R6断腿已开启")
+            forceHideR6(LegEffects.player.Character)
         end
     else
-        if r6Leg then
-            r6Leg:Destroy()
-            r6Leg = nil
-        end
-        if player and player.Character then
-            forceShowR6(player.Character)
-            print("✅ R6断腿已关闭")
-        end
+        if r6Leg then r6Leg:Destroy(); r6Leg = nil end
+        if LegEffects.player.Character then forceShowR6(LegEffects.player.Character) end
     end
 end
 
-function LegEffects.enableR15(bool, player)
+function LegEffects.enableR15(bool)
     LegEffects.r15S = bool
     if bool then
-        if player and player.Character then
+        if LegEffects.player.Character then
             createR15Leg()
-            forceHideR15(player.Character)
-            print("✅ R15断腿已开启")
+            forceHideR15(LegEffects.player.Character)
         end
     else
         for part, data in pairs(LegEffects.sR) do
-            if part and part.Parent then
-                part.Transparency = data.Transparency or 0
-            end
+            if part and part.Parent then part.Transparency = data.Transparency or 0 end
         end
         LegEffects.sR = {}
-        if r15Leg then
-            r15Leg:Destroy()
-            r15Leg = nil
-        end
-        print("✅ R15断腿已关闭")
+        if r15Leg then r15Leg:Destroy(); r15Leg = nil end
     end
 end
 
-function LegEffects.update(player)
-    if not player or not player.Character then return end
-    local c = player.Character
-    local now = tick()
+function LegEffects.update()
+    local c = LegEffects.player.Character
+    if not c then return end
     
-    -- R6断腿更新和检测
-    if LegEffects.r6S then
-        -- 更新断腿模型位置
-        if r6Leg then
-            local upper = findPart(c, {"RightUpperLeg", "Right Leg"})
-            if upper then
-                r6Leg.CFrame = upper.CFrame * CFrame.new(0, 0.7, 0)
-                r6Leg.Transparency = 0
-            end
-        end
-        
-        -- 每2秒强制检测一次R6腿部是否隐藏
-        if now - LegEffects.lastCheck >= 2 then
-            forceHideR6(c)
-            LegEffects.lastCheck = now
-        end
+    if LegEffects.r6S and r6Leg then
+        local upper = findPart(c, {"RightUpperLeg", "Right Leg"})
+        if upper then r6Leg.CFrame = upper.CFrame * CFrame.new(0, 0.7, 0) end
+        forceHideR6(c)
     end
     
-    -- R15断腿更新
-    if LegEffects.r15S then
-        if r15Leg then
-            local upper = findPart(c, {"RightUpperLeg"})
-            if upper then
-                r15Leg.CFrame = upper.CFrame * CFrame.new(0, 0.19, 0)
-                r15Leg.Transparency = 0
-            end
-        end
+    if LegEffects.r15S and r15Leg then
+        local upper = findPart(c, {"RightUpperLeg"})
+        if upper then r15Leg.CFrame = upper.CFrame * CFrame.new(0, 0.19, 0) end
     end
 end
 
