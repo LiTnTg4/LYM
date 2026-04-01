@@ -3,10 +3,10 @@ local Announcement = {}
 -- ==================== 公告配置（直接在这里修改）====================
 local CONFIG = {
     -- 标题文字
-    title = "💧 公告",
+    title = "",
     
     -- 内容文字（用 \n 换行）
-    content = "Reming是tsb最忧郁之人\n\n本次更新新加了这个公告和修改了布局\n\n下次更新添加防甩飞\n\n还有FF配置功能\n\n━━━━━━━━━━━━\n\n我太急吧忧郁了\n\n",
+    content = "Reming心情不怎么好\n\n本次更新新加了这个公告和修改了UI\n\n下次更新添加灵敏度调节功能\n\n还有FF配置功能\n\n━━━━━━━━━━━━\n\nReming太急吧忧郁了😞\n\n",
     
     -- 内容对齐方式: "center" / "left" / "right"
     align = "center",
@@ -280,7 +280,7 @@ function Announcement.show(player)
         
         if remainingTime <= 0 then
             if timerConnection then timerConnection:Disconnect() end
-            timerLabel.Text = "💧 可以确认了"
+            timerLabel.Text = "💧 点击确认"
             timerLabel.TextColor3 = Color3.fromRGB(150, 200, 230)
             confirmButton.BackgroundColor3 = Color3.fromRGB(80, 100, 130)
             confirmButton.TextColor3 = Color3.fromRGB(200, 220, 250)
