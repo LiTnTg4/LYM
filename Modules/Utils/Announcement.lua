@@ -1,5 +1,27 @@
 local Announcement = {}
 
+-- ==================== 公告配置（直接在这里修改）====================
+local CONFIG = {
+    -- 标题文字
+    title = "💧 公告",
+    
+    -- 内容文字（用 \n 换行）
+    content = "Reming是tsb最忧郁之人\n\n本次更新新加了这个公告和修改了布局\n\n下次更新添加防甩飞\n\n还有FF配置功能\n\n━━━━━━━━━━━━\n\n我太急吧忧郁了\n\n",
+    
+    -- 内容对齐方式: "center" / "left" / "right"
+    align = "center",
+    
+    -- 等待秒数（确认按钮变亮前需要等待的秒数）
+    waitTime = 6,
+    
+    -- 是否启用公告（true=显示，false=不显示）
+    enabled = true,
+    
+    -- 确认后的回调（不需要可留空）
+    onConfirm = function() end
+}
+-- ================================================================
+
 -- 字体配置
 local FONT_SIZES = {
     title = 24,
@@ -14,9 +36,6 @@ local WINDOW_SIZE = {
     width = 520,
     height = 440
 }
-
--- 默认等待秒数
-local DEFAULT_DURATION = 6
 
 -- 获取屏幕缩放比例
 local function getScale()
@@ -35,9 +54,8 @@ local function getFontSize(baseSize, scale)
     return math.floor(baseSize * scale)
 end
 
-function Announcement.show(player, title, content, contentPosition, duration, onConfirm)
-    duration = duration or DEFAULT_DURATION
-    contentPosition = contentPosition or "center"
+function Announcement.show(player)
+    if not CONFIG.enabled then return end
     
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "AnnouncementGui"
@@ -47,6 +65,7 @@ function Announcement.show(player, title, content, contentPosition, duration, on
     
     local scale = getScale()
     local runService = game:GetService("RunService")
+    local duration = CONFIG.waitTime
     
     -- 遮罩层
     local overlay = Instance.new("Frame")
@@ -124,7 +143,7 @@ function Announcement.show(player, title, content, contentPosition, duration, on
     titleLabel.Size = UDim2.new(1, -ss(20, scale), 0, ss(55, scale))
     titleLabel.Position = UDim2.new(0, ss(10, scale), 0, ss(10, scale))
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = title or "💧 公告"
+    titleLabel.Text = CONFIG.title
     titleLabel.TextColor3 = Color3.fromRGB(160, 190, 220)
     titleLabel.TextSize = getFontSize(FONT_SIZES.title, scale)
     titleLabel.Font = Enum.Font.Gotham
@@ -147,7 +166,7 @@ function Announcement.show(player, title, content, contentPosition, duration, on
     contentLabel.Size = UDim2.new(1, -ss(40, scale), 0, ss(190, scale))
     contentLabel.Position = UDim2.new(0, ss(20, scale), 0, ss(80, scale))
     contentLabel.BackgroundTransparency = 1
-    contentLabel.Text = content or "欢迎使用脚本\n\n请仔细阅读使用说明"
+    contentLabel.Text = CONFIG.content
     contentLabel.TextColor3 = Color3.fromRGB(180, 190, 210)
     contentLabel.TextSize = getFontSize(FONT_SIZES.content, scale)
     contentLabel.Font = Enum.Font.Gotham
@@ -155,13 +174,13 @@ function Announcement.show(player, title, content, contentPosition, duration, on
     contentLabel.Parent = frame
     contentLabel.ZIndex = 2
     
-    if contentPosition == "center" then
+    if CONFIG.align == "center" then
         contentLabel.TextXAlignment = Enum.TextXAlignment.Center
         contentLabel.TextYAlignment = Enum.TextYAlignment.Center
-    elseif contentPosition == "left" then
+    elseif CONFIG.align == "left" then
         contentLabel.TextXAlignment = Enum.TextXAlignment.Left
         contentLabel.TextYAlignment = Enum.TextYAlignment.Top
-    elseif contentPosition == "right" then
+    elseif CONFIG.align == "right" then
         contentLabel.TextXAlignment = Enum.TextXAlignment.Right
         contentLabel.TextYAlignment = Enum.TextYAlignment.Top
     end
@@ -295,9 +314,12 @@ function Announcement.show(player, title, content, contentPosition, duration, on
             if timerConnection then timerConnection:Disconnect() end
             if rainConnection then rainConnection:Disconnect() end
             screenGui:Destroy()
-            if onConfirm then onConfirm() end
+            if CONFIG.onConfirm then CONFIG.onConfirm() end
         end
     end)
 end
+
+-- 导出配置，方便外部修改
+Announcement.Config = CONFIG
 
 return Announcement
