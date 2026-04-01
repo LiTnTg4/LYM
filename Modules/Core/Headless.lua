@@ -1,8 +1,8 @@
 local Headless = {}
+Headless.isUnloaded = false
 
 function Headless.init(player)
     Headless.player = player
-    Headless.isUnloaded = false
 end
 
 function Headless.enable(bool)
@@ -36,15 +36,4 @@ function Headless.startLoop()
 end
 
 function Headless.stop()
-    Headless.isUnloaded = true
-    local c = Headless.player.Character
-    if c then
-        local head = c:FindFirstChild("Head")
-        if head then
-            head.Transparency = 0
-            head.CanCollide = true
-        end
-    end
-end
-
-return Headless
+    Head
