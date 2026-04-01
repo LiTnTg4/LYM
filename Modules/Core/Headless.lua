@@ -2,24 +2,27 @@ local Headless = {}
 
 function Headless.init(player)
     Headless.player = player
+    Headless.isUnloaded = false
 end
 
 function Headless.enable(bool)
-    local c = Headless.player.Character
-    if c then
-        local head = c:FindFirstChild("Head")
-        if head then
-            head.Transparency = 1
-            head.CanCollide = false
+    if bool and not Headless.isUnloaded then
+        local c = Headless.player.Character
+        if c then
+            local head = c:FindFirstChild("Head")
+            if head then
+                head.Transparency = 1
+                head.CanCollide = false
+            end
+            local face = c:FindFirstChild("Face")
+            if face then face:Destroy() end
         end
-        local face = c:FindFirstChild("Face")
-        if face then face:Destroy() end
     end
 end
 
-function Headless.startLoop(isUnloadedRef)
+function Headless.startLoop()
     task.spawn(function()
-        while not isUnloadedRef() do
+        while not Headless.isUnloaded do
             task.wait(1)
             local c = Headless.player.Character
             if c then
@@ -30,6 +33,18 @@ function Headless.startLoop(isUnloadedRef)
             end
         end
     end)
+end
+
+function Headless.stop()
+    Headless.isUnloaded = true
+    local c = Headless.player.Character
+    if c then
+        local head = c:FindFirstChild("Head")
+        if head then
+            head.Transparency = 0
+            head.CanCollide = true
+        end
+    end
 end
 
 return Headless
