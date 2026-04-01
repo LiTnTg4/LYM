@@ -6,7 +6,7 @@ local CONFIG = {
     title = "",
     
     -- 内容文字（用 \n 换行）
-    content = "Reming心情不怎么好\n\n本次更新新加了这个公告和修改了UI\n\n下次更新添加灵敏度调节功能\n\n还有FF配置功能\n\n━━━━━━━━━━━━\n\nReming太急吧忧郁了😞\n\n",
+    content = "Reming心情不怎么好\n\n本次更新新加了这个公告和修改了UI\n\n下次更新添加灵敏度调节功能\n\n还有FF配置功能\n脚本功能正在使用期间无法卸载脚本e\n━━━━━━━━━━━━\n\nReming太急吧忧郁了😞\n\n",
     
     -- 内容对齐方式: "center" / "left" / "right"
     align = "center",
