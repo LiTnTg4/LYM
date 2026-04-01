@@ -644,4 +644,86 @@ function Menu.init(player, state, modules, tweenService)
             if annoGui then annoGui:Destroy() end
         end)
         
-        unloadFrame.MouseEnter:Connect(function() unloadFrame
+        unloadFrame.MouseEnter:Connect(function() unloadFrame.BackgroundColor3 = Color3.fromRGB(80, 35, 25) end)
+        unloadFrame.MouseLeave:Connect(function() unloadFrame.BackgroundColor3 = Color3.fromRGB(45, 20, 15) end)
+        
+        local footer = Instance.new("Frame")
+        footer.Name = "Footer"
+        footer.Size = UDim2.new(1, -ss(20), 0, ss(32))
+        footer.Position = UDim2.new(0, ss(10), 1, -ss(36))
+        footer.BackgroundColor3 = Color3.fromRGB(20, 15, 10)
+        footer.BackgroundTransparency = 0.3
+        footer.BorderSizePixel = 0
+        footer.Parent = mf
+        
+        uiElements.footerText = Instance.new("TextLabel")
+        uiElements.footerText.Text = "> Reming V2.1 <"
+        uiElements.footerText.TextColor3 = Color3.fromRGB(150, 100, 60)
+        uiElements.footerText.TextSize = getFontSize(FONT_SIZES.footer)
+        uiElements.footerText.Font = Enum.Font.Code
+        uiElements.footerText.TextXAlignment = Enum.TextXAlignment.Center
+        uiElements.footerText.TextYAlignment = Enum.TextYAlignment.Center
+        uiElements.footerText.BackgroundTransparency = 1
+        uiElements.footerText.Size = UDim2.new(1, -ss(10), 1, 0)
+        uiElements.footerText.Position = UDim2.new(0, ss(5), 0, 0)
+        uiElements.footerText.Parent = footer
+        
+        local flickerChars = {"█", "▒", "░", " "}
+        uiElements.flickerText = Instance.new("TextLabel")
+        uiElements.flickerText.Size = UDim2.new(0, ss(30), 0, ss(22))
+        uiElements.flickerText.Position = UDim2.new(0.5, ss(20), 0, ss(10))
+        uiElements.flickerText.BackgroundTransparency = 1
+        uiElements.flickerText.Text = "▒"
+        uiElements.flickerText.TextColor3 = Color3.fromRGB(180, 100, 40)
+        uiElements.flickerText.TextSize = getFontSize(FONT_SIZES.flicker)
+        uiElements.flickerText.Font = Enum.Font.Code
+        uiElements.flickerText.Parent = mf
+        
+        task.spawn(function()
+            while mf and mf.Parent do
+                task.wait(0.2)
+                if uiElements.flickerText and uiElements.flickerText.Parent then
+                    uiElements.flickerText.Text = flickerChars[math.random(1, #flickerChars)]
+                end
+            end
+        end)
+        
+        uiElements.zoomInBtn.MouseButton1Click:Connect(function()
+            zoomMenu(0.1)
+        end)
+        
+        uiElements.zoomOutBtn.MouseButton1Click:Connect(function()
+            zoomMenu(-0.1)
+        end)
+        
+        task.spawn(function()
+            while mf and mf.Parent do
+                task.wait(1)
+                if timerTextObj and timerTextObj.Parent then
+                    timerTextObj.Text = "[系统运行: " .. getUptimeString() .. "]"
+                end
+            end
+        end)
+        
+        workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
+            updateAllUI()
+        end)
+        
+        return mf
+    end
+    
+    menuFrame = buildMenu()
+    
+    return {
+        show = showMenu,
+        hide = hideMenu,
+        isVisible = function() return menuFrame and menuFrame.Visible end,
+        setMinButtonCallback = function(callback)
+            if minButton then
+                minButton.MouseButton1Click:Connect(callback)
+            end
+        end
+    }
+end
+
+return Menu
