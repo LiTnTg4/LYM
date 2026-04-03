@@ -2,27 +2,14 @@ local Announcement = {}
 
 -- ==================== 公告配置（直接在这里修改）====================
 local CONFIG = {
-    -- 标题文字
-    title = "",
-    
-    -- 内容文字（用 \n 换行）
-    content = "Reming心情不怎么好\n\n本次更新新加了这个公告和修改了UI\n\n下次更新添加灵敏度调节功能\n\n还有FF配置功能\n\n脚本功能正在使用期间无法卸载脚本\n\nReming太急吧忧郁了😞\n\n",
-    
-    -- 内容对齐方式: "center" / "left" / "right"
-    align = "center",
-    
-    -- 等待秒数（确认按钮变亮前需要等待的秒数）
-    waitTime = 6,
-    
-    -- 是否启用公告（true=显示，false=不显示）
     enabled = true,
-    
-    -- 确认后的回调（不需要可留空）
-    onConfirm = function() end
+    title = "",
+    content = "Reming心情不怎么好\n\n本次更新新加了这个公告 修改了ui\n\n下次更新添加灵敏度调节功能\n\n还有FF配置功能\n\n━━━━━━━━━━━━\n\nReming太悲了\n\n",
+    align = "center",
+    waitTime = 6,
 }
 -- ================================================================
 
--- 字体配置
 local FONT_SIZES = {
     title = 24,
     content = 16,
@@ -31,25 +18,21 @@ local FONT_SIZES = {
     icon = 20
 }
 
--- 弹窗尺寸
 local WINDOW_SIZE = {
     width = 520,
     height = 440
 }
 
--- 获取屏幕缩放比例
 local function getScale()
     local viewportSize = workspace.CurrentCamera.ViewportSize
     local referenceHeight = 1080
     return math.min(1.3, math.max(0.7, viewportSize.Y / referenceHeight))
 end
 
--- 缩放尺寸
 local function ss(value, scale)
     return math.floor(value * scale)
 end
 
--- 缩放字体
 local function getFontSize(baseSize, scale)
     return math.floor(baseSize * scale)
 end
@@ -67,7 +50,6 @@ function Announcement.show(player)
     local runService = game:GetService("RunService")
     local duration = CONFIG.waitTime
     
-    -- 遮罩层
     local overlay = Instance.new("Frame")
     overlay.Size = UDim2.new(1, 0, 1, 0)
     overlay.BackgroundColor3 = Color3.fromRGB(20, 25, 35)
@@ -75,7 +57,6 @@ function Announcement.show(player)
     overlay.BorderSizePixel = 0
     overlay.Parent = screenGui
     
-    -- 弹窗框架
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(0, ss(WINDOW_SIZE.width, scale), 0, ss(WINDOW_SIZE.height, scale))
     frame.Position = UDim2.new(0.5, -ss(WINDOW_SIZE.width, scale) / 2, 0.5, -ss(WINDOW_SIZE.height, scale) / 2)
@@ -185,7 +166,7 @@ function Announcement.show(player)
         contentLabel.TextYAlignment = Enum.TextYAlignment.Top
     end
     
-    -- 进度条背景
+    -- 进度条
     local progressBg = Instance.new("Frame")
     progressBg.Size = UDim2.new(0, ss(280, scale), 0, ss(8, scale))
     progressBg.Position = UDim2.new(0.5, -ss(140, scale), 0, ss(295, scale))
@@ -198,7 +179,6 @@ function Announcement.show(player)
     progressBgCorner.CornerRadius = UDim.new(1, 0)
     progressBgCorner.Parent = progressBg
     
-    -- 进度条
     local progressBar = Instance.new("Frame")
     progressBar.Size = UDim2.new(0, 0, 1, 0)
     progressBar.BackgroundColor3 = Color3.fromRGB(100, 150, 200)
@@ -209,7 +189,7 @@ function Announcement.show(player)
     progressBarCorner.CornerRadius = UDim.new(1, 0)
     progressBarCorner.Parent = progressBar
     
-    -- 倒计时文字
+    -- 倒计时
     local timerLabel = Instance.new("TextLabel")
     timerLabel.Size = UDim2.new(1, 0, 0, ss(30, scale))
     timerLabel.Position = UDim2.new(0, 0, 0, ss(315, scale))
@@ -262,8 +242,6 @@ function Announcement.show(player)
     -- 倒计时逻辑
     local startTime = os.time()
     
-    timerLabel.Text = "等待 " .. duration .. " 秒"
-    
     local function updateProgress()
         local elapsed = os.time() - startTime
         local percent = math.min(1, elapsed / duration)
@@ -280,7 +258,7 @@ function Announcement.show(player)
         
         if remainingTime <= 0 then
             if timerConnection then timerConnection:Disconnect() end
-            timerLabel.Text = "💧 点击确认"
+            timerLabel.Text = "💧 可以确认了"
             timerLabel.TextColor3 = Color3.fromRGB(150, 200, 230)
             confirmButton.BackgroundColor3 = Color3.fromRGB(80, 100, 130)
             confirmButton.TextColor3 = Color3.fromRGB(200, 220, 250)
@@ -294,7 +272,6 @@ function Announcement.show(player)
         end
     end)
     
-    -- 悬停效果
     confirmButton.MouseEnter:Connect(function()
         if os.time() - startTime >= duration then
             confirmButton.BackgroundColor3 = Color3.fromRGB(100, 120, 150)
@@ -314,12 +291,8 @@ function Announcement.show(player)
             if timerConnection then timerConnection:Disconnect() end
             if rainConnection then rainConnection:Disconnect() end
             screenGui:Destroy()
-            if CONFIG.onConfirm then CONFIG.onConfirm() end
         end
     end)
 end
-
--- 导出配置，方便外部修改
-Announcement.Config = CONFIG
 
 return Announcement
