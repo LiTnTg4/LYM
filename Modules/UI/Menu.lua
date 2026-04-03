@@ -1,6 +1,6 @@
 local Menu = {}
 
-function Menu.init(player, state, modules, tweenService)
+function Menu.init(player, state, modules, tweenService, isUnloadedRef)
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "WastelandMenu"
     screenGui.IgnoreGuiInset = true
@@ -15,7 +15,6 @@ function Menu.init(player, state, modules, tweenService)
     local isAnimating = false
     local startTime = os.time()
     local minButton = nil
-    local isUnloaded = false
     
     local BASE_WIDTH = 380
     local BASE_HEIGHT = 580
@@ -601,15 +600,12 @@ function Menu.init(player, state, modules, tweenService)
         unloadButton.Text = ""
         unloadButton.Parent = unloadFrame
         
-        -- 卸载按钮逻辑
         unloadButton.MouseButton1Click:Connect(function()
-            -- 1. 关闭所有功能
             if state.R6Leg then modules.LegEffects.enableR6(false) end
             if state.R15Leg then modules.LegEffects.enableR15(false) end
             if state.Graphics then modules.Graphics.enable(false) end
             if state.Hat then modules.HatHider.enable(false) end
             
-            -- 2. 恢复角色
             local c = player.Character
             if c then
                 local head = c:FindFirstChild("Head")
@@ -627,21 +623,11 @@ function Menu.init(player, state, modules, tweenService)
                 end
             end
             
-            -- 3. 停止无头效果
-            if modules.Headless then
-                modules.Headless.isUnloaded = true
-            end
+            if isUnloadedRef then isUnloadedRef(true) end
             
-            -- 4. 删除菜单 GUI
             screenGui:Destroy()
-            
-            -- 5. 删除性能监控 GUI
-            local perfGui = player.PlayerGui:FindFirstChild("WastelandPerfMonitor")
-            if perfGui then perfGui:Destroy() end
-            
-            -- 6. 删除公告 GUI
-            local annoGui = player.PlayerGui:FindFirstChild("AnnouncementGui")
-            if annoGui then annoGui:Destroy() end
+            local perfParent = player.PlayerGui:FindFirstChild("WastelandPerfMonitor")
+            if perfParent then perfParent:Destroy() end
         end)
         
         unloadFrame.MouseEnter:Connect(function() unloadFrame.BackgroundColor3 = Color3.fromRGB(80, 35, 25) end)
