@@ -134,4 +134,16 @@ function LegEffects.update()
     end
 end
 
+function LegEffects.applyR6ToCharacter(character)
+    if LegEffects.r6S then
+        forceHideR6(character)
+    end
+end
+
+function LegEffects.applyR15ToCharacter(character)
+    if LegEffects.r15S then
+        forceHideR15(character)
+    end
+end
+
 return LegEffects
