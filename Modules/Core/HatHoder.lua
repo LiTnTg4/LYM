@@ -6,10 +6,16 @@ end
 
 function HatHider.enable(bool)
     local c = HatHider.player.Character
-    if not c then return end
+    if c then
+        HatHider.applyToCharacter(c, bool)
+    end
+end
+
+function HatHider.applyToCharacter(character, bool)
+    if not character then return end
     local kw = {"hair", "hat", "helmet", "cap", "hood", "headgear", "beanie", "visor", "accessory"}
     local t = bool and 1 or 0
-    for _, o in c:GetDescendants() do
+    for _, o in character:GetDescendants() do
         if o:IsA("BasePart") then
             local n = o.Name:lower()
             for _, k in ipairs(kw) do
