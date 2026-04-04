@@ -4,7 +4,7 @@ local Announcement = {}
 local CONFIG = {
     enabled = true,
     title = "",
-    content = "Reming心情不怎么好 Reming要走了\n\n本次更新新加了这个公告 修改了ui\n\n下次更新添加灵敏度调节功能\n\n还有FF配置功能\n\n━━━━━━━━━━━━\n\n要记得Reming哦\n\n",
+    content = "恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨\n\n恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨\n\n恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨\n\n恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨恨\n\n━━━━━━━━━━━━\n\n我恨你👁️👁️👁️👁️👁️\n\n",
     align = "center",
     waitTime = 6,
 }
