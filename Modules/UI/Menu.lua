@@ -345,7 +345,7 @@ function Menu.init(player, state, modules, tweenService, isUnloadedRef)
         titleBar.Parent = mf
         
         uiElements.titleText = Instance.new("TextLabel")
-        uiElements.titleText.Text = "Reming祝大家天天开心❤️"
+        uiElements.titleText.Text = "我恨你👁️"
         uiElements.titleText.TextColor3 = Color3.fromRGB(255, 180, 80)
         uiElements.titleText.TextSize = getFontSize(FONT_SIZES.title)
         uiElements.titleText.Font = Enum.Font.Code
@@ -643,7 +643,7 @@ function Menu.init(player, state, modules, tweenService, isUnloadedRef)
         footer.Parent = mf
         
         uiElements.footerText = Instance.new("TextLabel")
-        uiElements.footerText.Text = "> Reming V2.1 <"
+        uiElements.footerText.Text = "> 恨你👁️ <"
         uiElements.footerText.TextColor3 = Color3.fromRGB(150, 100, 60)
         uiElements.footerText.TextSize = getFontSize(FONT_SIZES.footer)
         uiElements.footerText.Font = Enum.Font.Code
