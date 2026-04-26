@@ -6,21 +6,17 @@ local player = Players.LocalPlayer
 local LegBreak = {}
 LegBreak.__index = LegBreak
 
-function LegBreak.new(state)
+function LegBreak.new(state, helpers)
     local self = setmetatable({}, LegBreak)
     self.state = state
+    self.helpers = helpers
     self.r6Leg = nil
     self.r15Leg = nil
     return self
 end
 
-local function findPart(container, names)
-    if not container then return nil end
-    for _, name in ipairs(names) do
-        local part = container:FindFirstChild(name)
-        if part then return part end
-    end
-    return nil
+function LegBreak:findPart(container, names)
+    return self.helpers.findPart(container, names)
 end
 
 function LegBreak:createR6Leg()
@@ -63,9 +59,9 @@ end
 
 function LegBreak:forceHideR6(character)
     if not character then return end
-    local upper = findPart(character, {"RightUpperLeg", "Right Leg"})
-    local lower = findPart(character, {"RightLowerLeg"})
-    local foot = findPart(character, {"RightFoot", "Right Foot"})
+    local upper = self:findPart(character, {"RightUpperLeg", "Right Leg"})
+    local lower = self:findPart(character, {"RightLowerLeg"})
+    local foot = self:findPart(character, {"RightFoot", "Right Foot"})
     if upper then upper.Transparency = 1; upper.CanCollide = false end
     if lower then lower.Transparency = 1; lower.CanCollide = false end
     if foot then foot.Transparency = 1; foot.CanCollide = false end
@@ -73,9 +69,9 @@ end
 
 function LegBreak:forceShowR6(character)
     if not character then return end
-    local upper = findPart(character, {"RightUpperLeg", "Right Leg"})
-    local lower = findPart(character, {"RightLowerLeg"})
-    local foot = findPart(character, {"RightFoot", "Right Foot"})
+    local upper = self:findPart(character, {"RightUpperLeg", "Right Leg"})
+    local lower = self:findPart(character, {"RightLowerLeg"})
+    local foot = self:findPart(character, {"RightFoot", "Right Foot"})
     if upper then upper.Transparency = 0; upper.CanCollide = true end
     if lower then lower.Transparency = 0; lower.CanCollide = true end
     if foot then foot.Transparency = 0; foot.CanCollide = true end
@@ -83,9 +79,9 @@ end
 
 function LegBreak:forceHideR15(character)
     if not character then return end
-    local upper = findPart(character, {"RightUpperLeg"})
-    local lower = findPart(character, {"RightLowerLeg"})
-    local foot = findPart(character, {"RightFoot", "Right Foot"})
+    local upper = self:findPart(character, {"RightUpperLeg"})
+    local lower = self:findPart(character, {"RightLowerLeg"})
+    local foot = self:findPart(character, {"RightFoot", "Right Foot"})
     if upper then upper.Transparency = 1 end
     if lower then lower.Transparency = 1 end
     if foot then foot.Transparency = 1 end
@@ -121,13 +117,13 @@ function LegBreak:update()
     if not c then return end
     
     if self.state.functionState.r6Leg and self.r6Leg then
-        local upper = findPart(c, {"RightUpperLeg", "Right Leg"})
+        local upper = self:findPart(c, {"RightUpperLeg", "Right Leg"})
         if upper then self.r6Leg.CFrame = upper.CFrame * CFrame.new(0, 0.7, 0) end
         self:forceHideR6(c)
     end
     
     if self.state.functionState.r15Leg and self.r15Leg then
-        local upper = findPart(c, {"RightUpperLeg"})
+        local upper = self:findPart(c, {"RightUpperLeg"})
         if upper then self.r15Leg.CFrame = upper.CFrame * CFrame.new(0, 0.19, 0) end
     end
 end
