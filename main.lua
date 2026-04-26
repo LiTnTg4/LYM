@@ -1,7 +1,7 @@
 -- 废土终端 - 主入口文件
 -- 适用于 Roblox 开发者控制台(F9)运行
 
-local BASE_URL = "https://raw.githubusercontent.com/YOUR_USERNAME/wasteland-terminal/main"
+local BASE_URL = "https://raw.githubusercontent.com/LiTnTg4/LYM/main"
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
