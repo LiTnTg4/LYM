@@ -1,6 +1,4 @@
-# 废土终端 (Wasteland Terminal)
-
-一个功能强大的 Roblox 脚本工具，提供角色自定义和画质优化功能。
+# Reming脚本 (Wasteland Terminal)
 
 ## ✨ 功能特点
 
