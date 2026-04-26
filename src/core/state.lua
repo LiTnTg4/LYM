@@ -73,7 +73,6 @@ function State:createSignal()
     return signal
 end
 
--- 创建卸载信号
 State.onUnload = State:createSignal()
 
 function State:unload()
