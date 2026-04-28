@@ -1,4 +1,4 @@
-# Reming脚本 (Wasteland Terminal)
+# Reming脚本
 
 ## ✨ 功能特点
 
