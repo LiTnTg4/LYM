@@ -81,14 +81,14 @@ function MainMenu:init()
     self:createMainFrame()
 end
 
-function MainMenu:createCorn(parent, radius)
+function MainMenu:createCorner(parent, radius)
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, radius)
     corner.Parent = parent
     return corner
 end
 
-function MainMenu:createStrok(parent, thickness, color, transparency)
+function MainMenu:createStroke(parent, thickness, color, transparency)
     local stroke = Instance.new("UIStroke")
     stroke.Thickness = thickness or 1
     stroke.Color = color or Color3.fromRGB(255, 255, 255)
@@ -116,8 +116,8 @@ function MainMenu:createMainFrame()
     self.menuLeft = self.mainFrame.Position.X.Offset
     self.menuTop = self.mainFrame.Position.Y.Offset
     
-    self:createCorn(self.mainFrame, 12)
-    self:createStrok(self.mainFrame, 1, Color3.fromRGB(255, 255, 255), 0.3)
+    self:createCorner(self.mainFrame, 12)
+    self:createStroke(self.mainFrame, 1, Color3.fromRGB(255, 255, 255), 0.3)
     
     self.mainFrame:GetPropertyChangedSignal("Position"):Connect(function()
         if not self.isResizing then
@@ -158,7 +158,7 @@ function MainMenu:createTitleBar()
     titleBar.BorderSizePixel = 0
     titleBar.Parent = self.mainFrame
     
-    self:createCorn(titleBar, 12)
+    self:createCorner(titleBar, 12)
     
     local titleText = Instance.new("TextLabel")
     titleText.Size = UDim2.new(0.6, 0, 1, 0)
@@ -181,7 +181,7 @@ function MainMenu:createTitleBar()
     minButton.Font = Enum.Font.Gotham
     minButton.Parent = titleBar
     
-    self:createCorn(minButton, 6)
+    self:createCorner(minButton, 6)
     
     minButton.MouseButton1Click:Connect(function()
         if self.onMinimize then
@@ -205,7 +205,7 @@ function MainMenu:createR6Button(parent, scale)
     r6Frame.AutoButtonColor = false
     r6Frame.Parent = parent
     
-    self:createCorn(r6Frame, 6)
+    self:createCorner(r6Frame, 6)
     
     local r6Status = Instance.new("TextLabel")
     r6Status.Size = UDim2.new(0, 45, 1, 0)
@@ -248,7 +248,7 @@ function MainMenu:createR15Button(parent, scale)
     r15Frame.AutoButtonColor = false
     r15Frame.Parent = parent
     
-    self:createCorn(r15Frame, 6)
+    self:createCorner(r15Frame, 6)
     
     local r15Status = Instance.new("TextLabel")
     r15Status.Size = UDim2.new(0, 45, 1, 0)
@@ -291,7 +291,7 @@ function MainMenu:createGraphicsButton(parent, scale)
     gfxFrame.AutoButtonColor = false
     gfxFrame.Parent = parent
     
-    self:createCorn(gfxFrame, 6)
+    self:createCorner(gfxFrame, 6)
     
     local gfxStatus = Instance.new("TextLabel")
     gfxStatus.Size = UDim2.new(0, 45, 1, 0)
@@ -334,7 +334,7 @@ function MainMenu:createHatToggleButton(parent, scale)
     self.hatToggleButton.AutoButtonColor = false
     self.hatToggleButton.Parent = parent
     
-    self:createCorn(self.hatToggleButton, 6)
+    self:createCorner(self.hatToggleButton, 6)
     
     self.hatStatus = Instance.new("TextLabel")
     self.hatStatus.Size = UDim2.new(0, 45, 1, 0)
@@ -369,7 +369,7 @@ function MainMenu:createDetailButton(parent, scale)
     self.detailButton.AutoButtonColor = false
     self.detailButton.Parent = parent
     
-    self:createCorn(self.detailButton, 6)
+    self:createCorner(self.detailButton, 6)
     
     self.detailButton.MouseButton1Click:Connect(function()
         local absPos = self.detailButton.AbsolutePosition
@@ -399,7 +399,7 @@ function MainMenu:createUnloadButton(parent, scale)
     unloadFrame.BorderSizePixel = 0
     unloadFrame.Parent = parent
     
-    self:createCorn(unloadFrame, 6)
+    self:createCorner(unloadFrame, 6)
     
     local unloadText = Instance.new("TextLabel")
     unloadText.Size = UDim2.new(1, 0, 1, 0)
@@ -433,7 +433,7 @@ function MainMenu:createResizeHandles()
     rightBar.ZIndex = 10
     rightBar.Parent = self.mainFrame
     
-    self:createCorn(rightBar, 2)
+    self:createCorner(rightBar, 2)
     
     local bottomBar = Instance.new("Frame")
     bottomBar.Size = UDim2.new(0, 50, 0, 8)
@@ -444,7 +444,7 @@ function MainMenu:createResizeHandles()
     bottomBar.ZIndex = 10
     bottomBar.Parent = self.mainFrame
     
-    self:createCorn(bottomBar, 2)
+    self:createCorner(bottomBar, 2)
     
     local function onEnter(bar) bar.BackgroundTransparency = 0.2 end
     local function onLeave(bar) bar.BackgroundTransparency = 0.5 end
