@@ -1,5 +1,4 @@
 -- 主菜单模块
--- 废土终端的主要用户界面
 
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -7,7 +6,7 @@ local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
-local DropdownMenu = loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/wasteland-terminal/main/src/ui/dropdown_menu.lua"))()
+local DropdownMenu = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiTnTg4/LYM/main/src/ui/dropdown_menu.lua"))()
 
 local MainMenu = {}
 MainMenu.__index = MainMenu
@@ -20,7 +19,6 @@ function MainMenu.new(state)
     self.isVisible = false
     self.dropdownMenu = DropdownMenu.new(state)
     
-    -- 菜单尺寸相关
     self.menuWidth = 300
     self.menuHeight = 460
     self.minWidth = 200
@@ -30,7 +28,6 @@ function MainMenu.new(state)
     self.menuLeft = nil
     self.menuTop = nil
     
-    -- 调整大小相关
     self.isResizing = false
     self.resizeType = nil
     self.resizeStartPos = nil
@@ -40,12 +37,10 @@ function MainMenu.new(state)
     self.resizeStartTop = nil
     self.resizeConnection = nil
     
-    -- UI 元素引用
     self.hatToggleButton = nil
     self.hatStatus = nil
     self.detailButton = nil
     
-    -- 模块回调
     self.onR6Toggle = nil
     self.onR15Toggle = nil
     self.onGraphicsToggle = nil
@@ -63,7 +58,6 @@ function MainMenu:getScale()
     return math.max(0.8, math.min(1.5, viewportSize.Y / referenceHeight))
 end
 
--- 设置模块回调
 function MainMenu:setCallbacks(callbacks)
     if callbacks.onR6Toggle then self.onR6Toggle = callbacks.onR6Toggle end
     if callbacks.onR15Toggle then self.onR15Toggle = callbacks.onR15Toggle end
@@ -85,7 +79,22 @@ function MainMenu:init()
     self.screenGui.Parent = player:WaitForChild("PlayerGui")
     
     self:createMainFrame()
-    self:createResizeHandles()
+end
+
+function MainMenu:createCorn(parent, radius)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, radius)
+    corner.Parent = parent
+    return corner
+end
+
+function MainMenu:createStrok(parent, thickness, color, transparency)
+    local stroke = Instance.new("UIStroke")
+    stroke.Thickness = thickness or 1
+    stroke.Color = color or Color3.fromRGB(255, 255, 255)
+    stroke.Transparency = transparency or 0.3
+    stroke.Parent = parent
+    return stroke
 end
 
 function MainMenu:createMainFrame()
@@ -107,11 +116,9 @@ function MainMenu:createMainFrame()
     self.menuLeft = self.mainFrame.Position.X.Offset
     self.menuTop = self.mainFrame.Position.Y.Offset
     
-    -- 圆角和边框
-    self:createCorner(self.mainFrame, 12)
-    self:createStroke(self.mainFrame, 1, Color3.fromRGB(255, 255, 255), 0.3)
+    self:createCorn(self.mainFrame, 12)
+    self:createStrok(self.mainFrame, 1, Color3.fromRGB(255, 255, 255), 0.3)
     
-    -- 监听位置变化
     self.mainFrame:GetPropertyChangedSignal("Position"):Connect(function()
         if not self.isResizing then
             self.menuLeft = self.mainFrame.Position.X.Offset
@@ -119,10 +126,8 @@ function MainMenu:createMainFrame()
         end
     end)
     
-    -- 创建标题栏
     self:createTitleBar()
     
-    -- 创建滚动框架
     local scrollFrame = Instance.new("ScrollingFrame")
     scrollFrame.Name = "ScrollFrame"
     scrollFrame.Size = UDim2.new(1, -16, 0, self.menuHeight - 95)
@@ -133,7 +138,6 @@ function MainMenu:createMainFrame()
     scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 400)
     scrollFrame.Parent = self.mainFrame
     
-    -- 创建功能按钮
     self:createR6Button(scrollFrame, scale)
     self:createR15Button(scrollFrame, scale)
     self:createGraphicsButton(scrollFrame, scale)
@@ -141,6 +145,7 @@ function MainMenu:createMainFrame()
     self:createDetailButton(scrollFrame, scale)
     self:createHintLabel(scrollFrame, scale)
     self:createUnloadButton(scrollFrame, scale)
+    self:createResizeHandles()
 end
 
 function MainMenu:createTitleBar()
@@ -153,9 +158,8 @@ function MainMenu:createTitleBar()
     titleBar.BorderSizePixel = 0
     titleBar.Parent = self.mainFrame
     
-    self:createCorner(titleBar, 12)
+    self:createCorn(titleBar, 12)
     
-    -- 标题文本
     local titleText = Instance.new("TextLabel")
     titleText.Size = UDim2.new(0.6, 0, 1, 0)
     titleText.Position = UDim2.new(0, 12 * scale, 0, 0)
@@ -167,7 +171,6 @@ function MainMenu:createTitleBar()
     titleText.TextXAlignment = Enum.TextXAlignment.Left
     titleText.Parent = titleBar
     
-    -- 最小化按钮
     local minButton = Instance.new("TextButton")
     minButton.Size = UDim2.new(0, 32 * scale, 0, 28 * scale)
     minButton.Position = UDim2.new(1, -40 * scale, 0.5, -14 * scale)
@@ -178,7 +181,7 @@ function MainMenu:createTitleBar()
     minButton.Font = Enum.Font.Gotham
     minButton.Parent = titleBar
     
-    self:createCorner(minButton, 6)
+    self:createCorn(minButton, 6)
     
     minButton.MouseButton1Click:Connect(function()
         if self.onMinimize then
@@ -202,7 +205,7 @@ function MainMenu:createR6Button(parent, scale)
     r6Frame.AutoButtonColor = false
     r6Frame.Parent = parent
     
-    self:createCorner(r6Frame, 6)
+    self:createCorn(r6Frame, 6)
     
     local r6Status = Instance.new("TextLabel")
     r6Status.Size = UDim2.new(0, 45, 1, 0)
@@ -216,19 +219,16 @@ function MainMenu:createR6Button(parent, scale)
     r6Status.Parent = r6Frame
     
     r6Frame.MouseButton1Click:Connect(function()
-        if self.onR6Toggle then
-            self.onR6Toggle()
-            -- 更新按钮 UI
-            local isOn = self.state.functionState.r6Leg
-            if isOn then
-                r6Frame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-                r6Status.Text = "ON"
-                r6Status.TextColor3 = Color3.fromRGB(255, 255, 255)
-            else
-                r6Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-                r6Status.Text = "OFF"
-                r6Status.TextColor3 = Color3.fromRGB(150, 150, 150)
-            end
+        if self.onR6Toggle then self.onR6Toggle() end
+        local isOn = self.state.functionState.r6Leg
+        if isOn then
+            r6Frame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            r6Status.Text = "ON"
+            r6Status.TextColor3 = Color3.fromRGB(255, 255, 255)
+        else
+            r6Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            r6Status.Text = "OFF"
+            r6Status.TextColor3 = Color3.fromRGB(150, 150, 150)
         end
     end)
 end
@@ -248,7 +248,7 @@ function MainMenu:createR15Button(parent, scale)
     r15Frame.AutoButtonColor = false
     r15Frame.Parent = parent
     
-    self:createCorner(r15Frame, 6)
+    self:createCorn(r15Frame, 6)
     
     local r15Status = Instance.new("TextLabel")
     r15Status.Size = UDim2.new(0, 45, 1, 0)
@@ -262,18 +262,16 @@ function MainMenu:createR15Button(parent, scale)
     r15Status.Parent = r15Frame
     
     r15Frame.MouseButton1Click:Connect(function()
-        if self.onR15Toggle then
-            self.onR15Toggle()
-            local isOn = self.state.functionState.r15Leg
-            if isOn then
-                r15Frame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-                r15Status.Text = "ON"
-                r15Status.TextColor3 = Color3.fromRGB(255, 255, 255)
-            else
-                r15Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-                r15Status.Text = "OFF"
-                r15Status.TextColor3 = Color3.fromRGB(150, 150, 150)
-            end
+        if self.onR15Toggle then self.onR15Toggle() end
+        local isOn = self.state.functionState.r15Leg
+        if isOn then
+            r15Frame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            r15Status.Text = "ON"
+            r15Status.TextColor3 = Color3.fromRGB(255, 255, 255)
+        else
+            r15Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            r15Status.Text = "OFF"
+            r15Status.TextColor3 = Color3.fromRGB(150, 150, 150)
         end
     end)
 end
@@ -293,7 +291,7 @@ function MainMenu:createGraphicsButton(parent, scale)
     gfxFrame.AutoButtonColor = false
     gfxFrame.Parent = parent
     
-    self:createCorner(gfxFrame, 6)
+    self:createCorn(gfxFrame, 6)
     
     local gfxStatus = Instance.new("TextLabel")
     gfxStatus.Size = UDim2.new(0, 45, 1, 0)
@@ -307,18 +305,16 @@ function MainMenu:createGraphicsButton(parent, scale)
     gfxStatus.Parent = gfxFrame
     
     gfxFrame.MouseButton1Click:Connect(function()
-        if self.onGraphicsToggle then
-            self.onGraphicsToggle()
-            local isOn = self.state.functionState.graphics
-            if isOn then
-                gfxFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-                gfxStatus.Text = "ON"
-                gfxStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
-            else
-                gfxFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-                gfxStatus.Text = "OFF"
-                gfxStatus.TextColor3 = Color3.fromRGB(150, 150, 150)
-            end
+        if self.onGraphicsToggle then self.onGraphicsToggle() end
+        local isOn = self.state.functionState.graphics
+        if isOn then
+            gfxFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            gfxStatus.Text = "ON"
+            gfxStatus.TextColor3 = Color3.fromRGB(255, 255, 255)
+        else
+            gfxFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            gfxStatus.Text = "OFF"
+            gfxStatus.TextColor3 = Color3.fromRGB(150, 150, 150)
         end
     end)
 end
@@ -338,7 +334,7 @@ function MainMenu:createHatToggleButton(parent, scale)
     self.hatToggleButton.AutoButtonColor = false
     self.hatToggleButton.Parent = parent
     
-    self:createCorner(self.hatToggleButton, 6)
+    self:createCorn(self.hatToggleButton, 6)
     
     self.hatStatus = Instance.new("TextLabel")
     self.hatStatus.Size = UDim2.new(0, 45, 1, 0)
@@ -373,7 +369,7 @@ function MainMenu:createDetailButton(parent, scale)
     self.detailButton.AutoButtonColor = false
     self.detailButton.Parent = parent
     
-    self:createCorner(self.detailButton, 6)
+    self:createCorn(self.detailButton, 6)
     
     self.detailButton.MouseButton1Click:Connect(function()
         local absPos = self.detailButton.AbsolutePosition
@@ -403,7 +399,7 @@ function MainMenu:createUnloadButton(parent, scale)
     unloadFrame.BorderSizePixel = 0
     unloadFrame.Parent = parent
     
-    self:createCorner(unloadFrame, 6)
+    self:createCorn(unloadFrame, 6)
     
     local unloadText = Instance.new("TextLabel")
     unloadText.Size = UDim2.new(1, 0, 1, 0)
@@ -423,16 +419,11 @@ function MainMenu:createUnloadButton(parent, scale)
     unloadButton.Parent = unloadFrame
     
     unloadButton.MouseButton1Click:Connect(function()
-        if self.onUnload then
-            self.onUnload()
-        end
+        if self.onUnload then self.onUnload() end
     end)
 end
 
 function MainMenu:createResizeHandles()
-    local scale = self:getScale()
-    
-    -- 右侧手柄
     local rightBar = Instance.new("Frame")
     rightBar.Size = UDim2.new(0, 8, 0, 50)
     rightBar.Position = UDim2.new(1, 5, 0.5, -25)
@@ -442,9 +433,8 @@ function MainMenu:createResizeHandles()
     rightBar.ZIndex = 10
     rightBar.Parent = self.mainFrame
     
-    self:createCorner(rightBar, 2)
+    self:createCorn(rightBar, 2)
     
-    -- 底部手柄
     local bottomBar = Instance.new("Frame")
     bottomBar.Size = UDim2.new(0, 50, 0, 8)
     bottomBar.Position = UDim2.new(0.5, -25, 1, 5)
@@ -454,23 +444,16 @@ function MainMenu:createResizeHandles()
     bottomBar.ZIndex = 10
     bottomBar.Parent = self.mainFrame
     
-    self:createCorner(bottomBar, 2)
+    self:createCorn(bottomBar, 2)
     
-    -- 悬停效果
-    local function onEnter(bar)
-        bar.BackgroundTransparency = 0.2
-    end
-    
-    local function onLeave(bar)
-        bar.BackgroundTransparency = 0.5
-    end
+    local function onEnter(bar) bar.BackgroundTransparency = 0.2 end
+    local function onLeave(bar) bar.BackgroundTransparency = 0.5 end
     
     rightBar.MouseEnter:Connect(function() onEnter(rightBar) end)
     rightBar.MouseLeave:Connect(function() onLeave(rightBar) end)
     bottomBar.MouseEnter:Connect(function() onEnter(bottomBar) end)
     bottomBar.MouseLeave:Connect(function() onLeave(bottomBar) end)
     
-    -- 调整大小逻辑
     rightBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             self:startResize("right", input)
@@ -499,33 +482,22 @@ function MainMenu:startResize(type, input)
     self.resizeStartLeft = self.menuLeft
     self.resizeStartTop = self.menuTop
     
-    if self.resizeConnection then 
-        self.resizeConnection:Disconnect() 
-    end
+    if self.resizeConnection then self.resizeConnection:Disconnect() end
     
     self.resizeConnection = RunService.RenderStepped:Connect(function()
         if not self.isResizing then return end
-        
         local currentPos = UserInputService:GetMouseLocation()
         local delta = currentPos - self.resizeStartPos
         
         if self.resizeType == "right" then
-            local newWidth = math.clamp(
-                self.resizeStartWidth + delta.X, 
-                self.minWidth, 
-                self.maxWidth
-            )
+            local newWidth = math.clamp(self.resizeStartWidth + delta.X, self.minWidth, self.maxWidth)
             if newWidth ~= self.menuWidth then
                 self.menuWidth = newWidth
                 self.menuLeft = self.resizeStartLeft
                 self:updateSize()
             end
         elseif self.resizeType == "bottom" then
-            local newHeight = math.clamp(
-                self.resizeStartHeight + delta.Y, 
-                self.minHeight, 
-                self.maxHeight
-            )
+            local newHeight = math.clamp(self.resizeStartHeight + delta.Y, self.minHeight, self.maxHeight)
             if newHeight ~= self.menuHeight then
                 self.menuHeight = newHeight
                 self.menuTop = self.resizeStartTop
@@ -546,7 +518,6 @@ end
 function MainMenu:updateSize()
     self.mainFrame.Size = UDim2.new(0, self.menuWidth, 0, self.menuHeight)
     self.mainFrame.Position = UDim2.new(0, self.menuLeft, 0, self.menuTop)
-    
     local scrollFrame = self.mainFrame:FindFirstChild("ScrollFrame")
     if scrollFrame then
         scrollFrame.Size = UDim2.new(1, -16, 0, self.menuHeight - 95)
@@ -556,30 +527,17 @@ end
 function MainMenu:show()
     self.mainFrame.Visible = true
     self.isVisible = true
-    
     local targetSize = self.mainFrame.Size
     local targetTransparency = self.mainFrame.BackgroundTransparency
     
-    self.mainFrame.Size = UDim2.new(
-        targetSize.X.Scale, 
-        targetSize.X.Offset * 0.7, 
-        targetSize.Y.Scale, 
-        targetSize.Y.Offset * 0.7
-    )
+    self.mainFrame.Size = UDim2.new(targetSize.X.Scale, targetSize.X.Offset * 0.7, targetSize.Y.Scale, targetSize.Y.Offset * 0.7)
     self.mainFrame.BackgroundTransparency = 0.5
     
     local sizeInfo = TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
     local transInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     
-    local sizeTween = TweenService:Create(self.mainFrame, sizeInfo, {Size = targetSize})
-    local transTween = TweenService:Create(
-        self.mainFrame, 
-        transInfo, 
-        {BackgroundTransparency = targetTransparency}
-    )
-    
-    sizeTween:Play()
-    transTween:Play()
+    TweenService:Create(self.mainFrame, sizeInfo, {Size = targetSize}):Play()
+    TweenService:Create(self.mainFrame, transInfo, {BackgroundTransparency = targetTransparency}):Play()
 end
 
 function MainMenu:hide(callback)
@@ -589,26 +547,14 @@ function MainMenu:hide(callback)
     end
     
     local targetSize = self.mainFrame.Size
-    
     local sizeInfo = TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.In)
     local transInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     
     local sizeTween = TweenService:Create(self.mainFrame, sizeInfo, {
-        Size = UDim2.new(
-            targetSize.X.Scale, 
-            targetSize.X.Offset * 0.7, 
-            targetSize.Y.Scale, 
-            targetSize.Y.Offset * 0.7
-        )
+        Size = UDim2.new(targetSize.X.Scale, targetSize.X.Offset * 0.7, targetSize.Y.Scale, targetSize.Y.Offset * 0.7)
     })
-    local transTween = TweenService:Create(
-        self.mainFrame, 
-        transInfo, 
-        {BackgroundTransparency = 0.5}
-    )
-    
+    TweenService:Create(self.mainFrame, transInfo, {BackgroundTransparency = 0.5}):Play()
     sizeTween:Play()
-    transTween:Play()
     
     sizeTween.Completed:Connect(function()
         self.mainFrame.Visible = false
@@ -635,22 +581,6 @@ function MainMenu:updateHatButtonUI()
             self.hatToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         end
     end
-end
-
-function MainMenu:createCorner(parent, radius)
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, radius)
-    corner.Parent = parent
-    return corner
-end
-
-function MainMenu:createStroke(parent, thickness, color, transparency)
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = thickness or 1
-    stroke.Color = color or Color3.fromRGB(255, 255, 255)
-    stroke.Transparency = transparency or 0.3
-    stroke.Parent = parent
-    return stroke
 end
 
 function MainMenu:unload()
